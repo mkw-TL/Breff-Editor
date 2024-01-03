@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 class DataProcessor {
-  String emData;
+  String dat;
 
-  DataProcessor(this.emData);
+  DataProcessor(this.dat);
 
   String chopAndAssign(int length) {
-    var result = emData.substring(0, length);
-    emData = emData.substring(length, emData.length);
+    var result = dat.substring(0, length);
+    dat = dat.substring(length, dat.length);
     return result;
   }
 }
@@ -248,41 +248,61 @@ class SubFileData extends ChangeNotifier {
     out.write(gabiHelp2);
     out.write(padding1);
     out.write(zOffset);
-    out.write(lenParticleDat);
-    out.write(partBytes);
-    out.write(col1Primary);
-    out.write(col1Secondary);
-    out.write(col2Primary);
-    out.write(col2Secondary);
-    out.write(sizePart);
-    out.write(scalePart);
-    out.write(rotPart);
-    out.write(texScale1);
-    out.write(texScale2);
-    out.write(texScale3);
-    out.write(texRot);
-    out.write(texTrans1);
-    out.write(texTrans2);
-    out.write(texTrans3);
-    out.write(mTexture1);
-    out.write(mTexture2);
-    out.write(mTexture3);
-    out.write(textureWrap);
-    out.write(textureReverse);
-    out.write(alphaCompRef0);
-    out.write(alphaCompRef1);
-    out.write(rotOffsetRand1);
-    out.write(rotOffsetRand2);
-    out.write(rotOffsetRand3);
-    out.write(rotOffset);
-    out.write(lenTexRef1);
-    out.write(texRef1);
-    out.write(lenTexRef2);
-    out.write(texRef2);
-    out.write(lenTexRef3);
-    out.write(texRef3);
-    out.write(animationData);
-    return out.toString();
+    String outStr = "";
+    if (out.toString().length != int.parse(emBytes, radix: 16)) {
+      print(out.toString());
+      print(out.toString().length);
+      print(emBytes);
+      print(int.parse(emBytes));
+    } else {
+      outStr = out.toString().padRight(int.parse(emBytes, radix: 16));
+    }
+    StringBuffer out2 = StringBuffer();
+    // particle
+    out2.write(lenParticleDat);
+    out2.write(partBytes);
+    out2.write(col1Primary);
+    out2.write(col1Secondary);
+    out2.write(col2Primary);
+    out2.write(col2Secondary);
+    out2.write(sizePart);
+    out2.write(scalePart);
+    out2.write(rotPart);
+    out2.write(texScale1);
+    out2.write(texScale2);
+    out2.write(texScale3);
+    out2.write(texRot);
+    out2.write(texTrans1);
+    out2.write(texTrans2);
+    out2.write(texTrans3);
+    out2.write(mTexture1);
+    out2.write(mTexture2);
+    out2.write(mTexture3);
+    out2.write(textureWrap);
+    out2.write(textureReverse);
+    out2.write(alphaCompRef0);
+    out2.write(alphaCompRef1);
+    out2.write(rotOffsetRand1);
+    out2.write(rotOffsetRand2);
+    out2.write(rotOffsetRand3);
+    out2.write(rotOffset);
+    out2.write(lenTexRef1);
+    out2.write(texRef1);
+    out2.write(lenTexRef2);
+    out2.write(texRef2);
+    out2.write(lenTexRef3);
+    out2.write(texRef3);
+    String outStr2 = "";
+    if (out2.toString().length != int.parse(partBytes, radix: 16)) {
+      print(out2.toString());
+      print(out2.toString().length);
+      print(partBytes);
+      print(int.parse(partBytes));
+    } else {
+      outStr2 = out2.toString().padRight(int.parse(partBytes, radix: 16));
+    }
+    String outStr3 = animationData;
+    return "$outStr$outStr2$outStr3";
   }
 
   void parseThis(emData, partAndAnimData) {
@@ -404,7 +424,7 @@ class SubFileData extends ChangeNotifier {
     texRef2 = partProc.chopAndAssign(int.parse(lenTexRef2, radix: 16));
     lenTexRef3 = partProc.chopAndAssign(2);
     texRef3 = partProc.chopAndAssign(int.parse(lenTexRef1, radix: 16));
-    animationData = partProc.chopAndAssign(partAndAnimData.length);
+    animationData = partProc.dat; // no getter needed get rekt java
   }
 
   String getOtherBytes() {

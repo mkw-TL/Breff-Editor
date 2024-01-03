@@ -1,23 +1,24 @@
-import 'dart:async';
-import 'dart:io';
+// import 'dart:async';
+// import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app_3/block_header.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:file_picker/file_picker.dart'; // other
+// import 'package:path_provider/path_provider.dart';
+// import 'package:file_picker/file_picker.dart'; // other
 import 'package:file_selector/file_selector.dart';
 import 'package:provider/provider.dart';
-import 'subfile_header.dart';
+// import 'subfile_header.dart';
 import 'section_header.dart';
-import 'subfile_data.dart';
-import 'block_header.dart';
+// import 'subfile_data.dart';
+// import 'block_header.dart';
 import 'subfile_table.dart';
+// import 'package:get/get.dart';
 
 void main() {
   runApp(ChangeNotifierProvider(
     create: (context) => AppState(),
-    child: MyApp(),
+    child: const MyApp(),
   ));
 }
 
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
       ),
-      home: MainPage(),
+      home: const MainPage(),
     );
   }
 }
@@ -88,7 +89,7 @@ class AppState extends ChangeNotifier {
     out.write(sectionHeader.getStr());
     out.write(subFileTable.getStr());
     String res = out.toString();
-    assert(res.length == block.lenInBytes);
+    assert(res.length == int.parse(block.getThisBytes(), radix: 16));
   }
 }
 
@@ -121,7 +122,7 @@ class _MainPageState extends State<MainPage> {
               child: TextButton(
                   onPressed: () =>
                       Provider.of<AppState>(context, listen: false).pickFile(),
-                  child: Text("Get File")))
+                  child: const Text("Get File")))
         ],
       ),
     );
