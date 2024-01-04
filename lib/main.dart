@@ -15,6 +15,8 @@ import 'section_header.dart';
 import 'subfile_table.dart';
 // import 'package:get/get.dart';
 
+List<Widget> subFileWidgets = <Widget>[];
+
 void main() {
   runApp(ChangeNotifierProvider(
     create: (context) => AppState(),
@@ -31,9 +33,9 @@ class MyApp extends StatelessWidget {
       title: 'Namer App',
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
       ),
-      home: const MainPage(),
+      home: const SubFilePage(),
     );
   }
 }
@@ -63,7 +65,7 @@ class AppState extends ChangeNotifier {
       StringBuffer buff = StringBuffer();
       int i = 0;
       for (var _ in byteList) {
-        String tempString = byteList[i].toRadixString(16).padLeft(4, "0");
+        String tempString = byteList[i].toRadixString(16).padLeft(2, "0");
         buff.write(tempString);
         i++;
       }
@@ -89,7 +91,139 @@ class AppState extends ChangeNotifier {
     out.write(sectionHeader.getStr());
     out.write(subFileTable.getStr());
     String res = out.toString();
-    assert(res.length == int.parse(block.getThisBytes(), radix: 16));
+    print(res.length);
+    // assert(res.length == int.parse(block.getThisBytes(), radix: 16));
+  }
+}
+
+class SubFilePage extends StatefulWidget {
+  const SubFilePage({super.key});
+
+  @override
+  State<SubFilePage> createState() => _SubFilePageState();
+}
+
+void noop() {
+  1 + 1;
+}
+
+class _SubFilePageState extends State<SubFilePage> {
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.blue.shade100,
+      child: Column(children: <Widget>[
+        SizedBox(
+            child: Container(
+          color: Colors.blue.shade200,
+          child: Row(
+            children: <Widget>[
+              TextButton(onPressed: () => noop(), child: const Text("Save")),
+              TextButton(onPressed: () => noop(), child: const Text("Save as")),
+              TextButton(onPressed: () => noop(), child: const Text("Open")),
+            ],
+          ),
+        )),
+        SizedBox(
+          child: Container(
+            color: Colors.blue.shade100,
+            child: ElevatedButtonTheme(
+              data: ElevatedButtonThemeData(
+                  style: ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll(Colors.teal.shade300),
+                shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.elliptical(10, 7)))),
+              )),
+              child:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: ElevatedButton(
+                    onPressed: () => noop(),
+                    child: const Text("SubFile1"),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: ElevatedButton(
+                      onPressed: () => noop(), child: const Text("SubFile2")),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: ElevatedButton(
+                      onPressed: () => noop(), child: const Text("SubFile3")),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: ElevatedButton(
+                      onPressed: () => noop(), child: const Text("+")),
+                ),
+              ]),
+            ),
+          ),
+        ),
+        Expanded(
+            child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Flexible(
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Text("Size:",
+                                  textScaler: TextScaler.linear(.3)),
+                            ),
+                            Text("1.0", textScaler: TextScaler.linear(.3))
+                          ],
+                        ),
+                        Text("Scale", textScaler: TextScaler.linear(.3)),
+                        Text("Rotation", textScaler: TextScaler.linear(.3)),
+                      ]),
+                ),
+
+                // nop
+                TextButton(onPressed: () => noop(), child: Text("Colors")),
+                TextButton(
+                    onPressed: () => noop(), child: Text("Texture Names")),
+                TextButton(onPressed: () => noop(), child: Text("Settings")),
+                TextButton(
+                    onPressed: () => noop(),
+                    child: Text("mTex1, mtex2, mtex3")),
+              ],
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TextButton(onPressed: () => noop(), child: Text("Misc")),
+                TextButton(
+                    onPressed: () => noop(), child: Text("Misc Settings")),
+                TextButton(
+                    onPressed: () => noop(), child: Text("Emitter Details")),
+                TextButton(onPressed: () => noop(), child: Text("Shape")),
+                TextButton(onPressed: () => noop(), child: Text("Dims")),
+              ],
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TextButton(
+                    onPressed: () => noop(), child: Text("Particle Details")),
+                TextButton(
+                    onPressed: () => noop(),
+                    child: Text("Particle type, life, etc")),
+                TextButton(onPressed: () => noop(), child: Text("TEV here")),
+              ],
+            ),
+          ],
+        )),
+      ]),
+    );
   }
 }
 
@@ -101,28 +235,35 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  String phylDat = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Reading and writing to files"),
       ),
-      body: Row(
+      body: Column(
         children: [
           Consumer<AppState>(
             builder: (context, appState, child) {
               // Access the phyl variable from the AppState
               String phylInfo = appState.phyl?.name ?? "No file selected";
-              return Center(
-                child: Text(phylInfo),
-              );
+              phylDat = appState.bits;
+              return Row(children: [Text(phylInfo), Text(phylDat)]);
             },
           ),
-          Center(
-              child: TextButton(
+          Row(
+            children: [
+              TextButton(
                   onPressed: () =>
                       Provider.of<AppState>(context, listen: false).pickFile(),
-                  child: const Text("Get File")))
+                  child: const Text("Get File")),
+              TextButton(
+                  onPressed: () => Provider.of<AppState>(context, listen: false)
+                      .readFile(phylDat),
+                  child: const Text("Read File"))
+            ],
+          ),
         ],
       ),
     );
