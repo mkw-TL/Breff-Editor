@@ -108,6 +108,67 @@ void noop() {
 }
 
 class _SubFilePageState extends State<SubFilePage> {
+  Widget rowOfThree(BuildContext context, String str1, String str2, String str3) {
+    return Flexible(
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Text("$str1", textScaler: TextScaler.linear(.3)),
+                Text("$str2", textScaler: TextScaler.linear(.3)),
+                Text("$str3", textScaler: TextScaler.linear(.3)),
+          ]),
+        );
+  }
+
+  Widget firstColumn(BuildContext context) {
+    String col1Prim;
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        rowOfThree(context, "Size", "Scale", "Rotation"),
+            Consumer<AppState>(
+            builder: (context, appState, child) {
+              // Access the phyl variable from the AppState
+              col1Prim = appState.subFileTable.subFileDataList[0].col1Primary;
+              ColoredBox(color: col1Prim)
+            }
+
+        // nop
+        TextButton(onPressed: () => noop(), child: Text("Colors")),
+        TextButton(onPressed: () => noop(), child: Text("Texture Names")),
+        TextButton(onPressed: () => noop(), child: Text("Settings")),
+        TextButton(onPressed: () => noop(), child: Text("mTex1, mtex2, mtex3")),
+      ],
+    );
+  }
+
+  Widget secondColumn(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        TextButton(onPressed: () => noop(), child: Text("Misc")),
+        TextButton(onPressed: () => noop(), child: Text("Misc Settings")),
+        TextButton(onPressed: () => noop(), child: Text("Emitter Details")),
+        TextButton(onPressed: () => noop(), child: Text("Shape")),
+        TextButton(onPressed: () => noop(), child: Text("Dims")),
+      ],
+    );
+  }
+
+  Widget thirdColumn(BuildContext context) {
+    return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TextButton(
+                    onPressed: () => noop(), child: Text("Particle Details")),
+                TextButton(
+                    onPressed: () => noop(),
+                    child: Text("Particle type, life, etc")),
+                TextButton(onPressed: () => noop(), child: Text("TEV here")),
+              ],
+            );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.blue.shade100,
@@ -165,61 +226,9 @@ class _SubFilePageState extends State<SubFilePage> {
             child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Flexible(
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Text("Size:",
-                                  textScaler: TextScaler.linear(.3)),
-                            ),
-                            Text("1.0", textScaler: TextScaler.linear(.3))
-                          ],
-                        ),
-                        Text("Scale", textScaler: TextScaler.linear(.3)),
-                        Text("Rotation", textScaler: TextScaler.linear(.3)),
-                      ]),
-                ),
-
-                // nop
-                TextButton(onPressed: () => noop(), child: Text("Colors")),
-                TextButton(
-                    onPressed: () => noop(), child: Text("Texture Names")),
-                TextButton(onPressed: () => noop(), child: Text("Settings")),
-                TextButton(
-                    onPressed: () => noop(),
-                    child: Text("mTex1, mtex2, mtex3")),
-              ],
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                TextButton(onPressed: () => noop(), child: Text("Misc")),
-                TextButton(
-                    onPressed: () => noop(), child: Text("Misc Settings")),
-                TextButton(
-                    onPressed: () => noop(), child: Text("Emitter Details")),
-                TextButton(onPressed: () => noop(), child: Text("Shape")),
-                TextButton(onPressed: () => noop(), child: Text("Dims")),
-              ],
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                TextButton(
-                    onPressed: () => noop(), child: Text("Particle Details")),
-                TextButton(
-                    onPressed: () => noop(),
-                    child: Text("Particle type, life, etc")),
-                TextButton(onPressed: () => noop(), child: Text("TEV here")),
-              ],
-            ),
+            firstColumn(context),
+            secondColumn(context),
+            thirdColumn(context),
           ],
         )),
       ]),
