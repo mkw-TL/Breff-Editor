@@ -8,10 +8,10 @@ import 'package:flutter_app_3/block_header.dart';
 // import 'package:file_picker/file_picker.dart'; // other
 import 'package:file_selector/file_selector.dart';
 import 'package:provider/provider.dart';
-// import 'subfile_header.dart';
+import 'subfile_header.dart';
 import 'section_header.dart';
-// import 'subfile_data.dart';
-// import 'block_header.dart';
+import 'subfile_data.dart';
+import 'block_header.dart';
 import 'subfile_table.dart';
 // import 'package:get/get.dart';
 
@@ -33,7 +33,6 @@ class MyApp extends StatelessWidget {
       title: 'Namer App',
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
       ),
       home: const SubFilePage(),
     );
@@ -108,15 +107,15 @@ void noop() {
 }
 
 class _SubFilePageState extends State<SubFilePage> {
-  Widget rowOfThree(BuildContext context, String str1, String str2, String str3) {
+  Widget rowOfThree(
+      BuildContext context, String str1, String str2, String str3) {
     return Flexible(
-          child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Text("$str1", textScaler: TextScaler.linear(.3)),
-                Text("$str2", textScaler: TextScaler.linear(.3)),
-                Text("$str3", textScaler: TextScaler.linear(.3)),
-          ]),
-        );
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Text("$str1", textScaler: TextScaler.linear(.3)),
+        Text("$str2", textScaler: TextScaler.linear(.3)),
+        Text("$str3", textScaler: TextScaler.linear(.3)),
+      ]),
+    );
   }
 
   Widget firstColumn(BuildContext context) {
@@ -125,12 +124,24 @@ class _SubFilePageState extends State<SubFilePage> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         rowOfThree(context, "Size", "Scale", "Rotation"),
-            Consumer<AppState>(
-            builder: (context, appState, child) {
-              // Access the phyl variable from the AppState
-              col1Prim = appState.subFileTable.subFileDataList[0].col1Primary;
-              ColoredBox(color: col1Prim)
-            }
+        Container(
+          color: Color.fromARGB(0, 188, 41, 210),
+          width: 100,
+          height: 100,
+        ),
+        Consumer<AppState>(builder: (context, appState, child) {
+          // // Access the phyl variable from the AppState
+          // col1Prim = appState.subFileTable.subFileDataList[0].col1Primary;
+          // int red = int.parse(col1Prim.substring(0, 2), radix: 16);
+          // int green = int.parse(col1Prim.substring(2, 4), radix: 16);
+          // int blue = int.parse(col1Prim.substring(4, 6), radix: 16);
+          // int alpha = int.parse(col1Prim.substring(6, 8), radix: 16);
+          int alpha = 100;
+          int red = 50;
+          int green = 200;
+          int blue = 150;
+          return ColoredBox(color: Color.fromARGB(alpha, red, green, blue));
+        }),
 
         // nop
         TextButton(onPressed: () => noop(), child: Text("Colors")),
@@ -156,22 +167,20 @@ class _SubFilePageState extends State<SubFilePage> {
 
   Widget thirdColumn(BuildContext context) {
     return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                TextButton(
-                    onPressed: () => noop(), child: Text("Particle Details")),
-                TextButton(
-                    onPressed: () => noop(),
-                    child: Text("Particle type, life, etc")),
-                TextButton(onPressed: () => noop(), child: Text("TEV here")),
-              ],
-            );
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        TextButton(onPressed: () => noop(), child: Text("Particle Details")),
+        TextButton(
+            onPressed: () => noop(), child: Text("Particle type, life, etc")),
+        TextButton(onPressed: () => noop(), child: Text("TEV here")),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.blue.shade100,
+      decoration: BoxDecoration(color: Colors.blue.shade100),
       child: Column(children: <Widget>[
         SizedBox(
             child: Container(
