@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal.shade300),
         textTheme: GoogleFonts.cabinCondensedTextTheme(textTheme),
       ),
-      home: const SubFilePage(),
+      home: const Material(child: SubFilePage()),
     );
   }
 }
@@ -167,8 +167,8 @@ class _SubFilePageState extends State<SubFilePage> {
   }
 
   Widget rowOfThree(context, str1, str2, str3) {
-    return SizedBox(
-      height: 40,
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: 40, maxWidth: 350, minWidth: 100),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
         Text(
           str1,
@@ -176,20 +176,29 @@ class _SubFilePageState extends State<SubFilePage> {
                 color: Theme.of(context).colorScheme.primary,
               ),
         ),
-        // TextFormField(
-        //   initialValue: "a",
-        // ),
+        Expanded(
+          flex: 1,
+          child: TextField(),
+        ),
         Text(
           str2,
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                 color: Theme.of(context).colorScheme.primary,
               ),
         ),
+        Expanded(
+          flex: 1,
+          child: TextField(),
+        ),
         Text(
           str3,
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                 color: Theme.of(context).colorScheme.primary,
               ),
+        ),
+        Expanded(
+          flex: 1,
+          child: TextField(),
         ),
       ]),
     );
@@ -291,33 +300,6 @@ class _SubFilePageState extends State<SubFilePage> {
             TextButton(onPressed: () => noop(), child: Text("texReverse?"))
           ],
         ),
-      ],
-    );
-  }
-
-  Row colorGenerator(BuildContext context, color, name) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Flexible(
-          child: ConstrainedBox(
-              constraints: BoxConstraints(
-                  minHeight: 50, maxHeight: 100, minWidth: 100, maxWidth: 200)),
-        ),
-        ConstrainedBox(
-          constraints: BoxConstraints(
-              minHeight: 50, maxHeight: 100, minWidth: 50, maxWidth: 100),
-          child: ColoredBox(color: color),
-        ),
-        Flexible(
-          child: ConstrainedBox(
-              constraints: BoxConstraints(
-                  minHeight: 50, maxHeight: 100, minWidth: 50, maxWidth: 100)),
-        ),
-        Text(name,
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  color: Theme.of(context).colorScheme.primary,
-                )),
       ],
     );
   }
@@ -443,49 +425,6 @@ class _SubFilePageState extends State<SubFilePage> {
           ],
         )),
       ]),
-    );
-  }
-}
-
-class MainPage extends StatefulWidget {
-  const MainPage({super.key});
-
-  @override
-  State<MainPage> createState() => _MainPageState();
-}
-
-class _MainPageState extends State<MainPage> {
-  String phylDat = "";
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Reading and writing to files"),
-      ),
-      body: Column(
-        children: [
-          Consumer<AppState>(
-            builder: (context, appState, child) {
-              // Access the phyl variable from the AppState
-              String phylInfo = appState.phyl?.name ?? "No file selected";
-              phylDat = appState.bits;
-              return Row(children: [Text(phylInfo), Text(phylDat)]);
-            },
-          ),
-          Row(
-            children: [
-              TextButton(
-                  onPressed: () =>
-                      Provider.of<AppState>(context, listen: false).pickFile(),
-                  child: const Text("Get File")),
-              TextButton(
-                  onPressed: () => Provider.of<AppState>(context, listen: false)
-                      .readFile(phylDat),
-                  child: const Text("Read File"))
-            ],
-          ),
-        ],
-      ),
     );
   }
 }
