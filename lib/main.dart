@@ -7,12 +7,14 @@ import 'package:flutter_app_3/block_header.dart';
 // import 'package:path_provider/path_provider.dart';
 // import 'package:file_picker/file_picker.dart'; // other
 import 'package:file_selector/file_selector.dart';
+import 'package:desktop_window/desktop_window.dart';
 import 'package:provider/provider.dart';
 import 'subfile_header.dart';
 import 'section_header.dart';
 import 'subfile_data.dart';
 import 'block_header.dart';
 import 'subfile_table.dart';
+import 'package:google_fonts/google_fonts.dart';
 // import 'package:get/get.dart';
 
 List<Widget> subFileWidgets = <Widget>[];
@@ -22,6 +24,7 @@ void main() {
     create: (context) => AppState(),
     child: const MyApp(),
   ));
+  DesktopWindow.setMinWindowSize(Size(600, 400));
 }
 
 class MyApp extends StatelessWidget {
@@ -29,10 +32,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return MaterialApp(
       title: 'Namer App',
       theme: ThemeData(
         useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal.shade300),
+        textTheme: GoogleFonts.cabinCondensedTextTheme(textTheme),
       ),
       home: const SubFilePage(),
     );
@@ -107,48 +113,283 @@ void noop() {
 }
 
 class _SubFilePageState extends State<SubFilePage> {
-  Widget rowOfThree(
-      BuildContext context, String str1, String str2, String str3) {
-    return Flexible(
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Text("$str1", textScaler: TextScaler.linear(.3)),
-        Text("$str2", textScaler: TextScaler.linear(.3)),
-        Text("$str3", textScaler: TextScaler.linear(.3)),
+  //
+  Widget topMenu(context) {
+    return SizedBox(
+        child: Container(
+      color: Colors.blue.shade200,
+      child: Row(
+        children: <Widget>[
+          TextButton(onPressed: () => noop(), child: const Text("Save")),
+          TextButton(onPressed: () => noop(), child: const Text("Save as")),
+          TextButton(onPressed: () => noop(), child: const Text("Open")),
+        ],
+      ),
+    ));
+  }
+
+  Widget listOfSubfiles(context) {
+    return Container(
+      color: Colors.blue.shade100,
+      child: ElevatedButtonTheme(
+        data: ElevatedButtonThemeData(
+            style: ButtonStyle(
+          backgroundColor: MaterialStatePropertyAll(Colors.teal.shade300),
+          shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.elliptical(10, 7)))),
+        )),
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: ElevatedButton(
+              onPressed: () => noop(),
+              child: const Text("SubFile1"),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: ElevatedButton(
+                onPressed: () => noop(), child: const Text("SubFile2")),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: ElevatedButton(
+                onPressed: () => noop(), child: const Text("SubFile3")),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(2.0),
+            child:
+                ElevatedButton(onPressed: () => noop(), child: const Text("+")),
+          ),
+        ]),
+      ),
+    );
+  }
+
+  Widget rowOfThree(context, str1, str2, str3) {
+    return SizedBox(
+      height: 40,
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+        Text(
+          str1,
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+        ),
+        // TextFormField(
+        //   initialValue: "a",
+        // ),
+        Text(
+          str2,
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+        ),
+        Text(
+          str3,
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+        ),
       ]),
     );
   }
 
   Widget firstColumn(BuildContext context) {
-    String col1Prim;
+    // String col1Prim;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         rowOfThree(context, "Size", "Scale", "Rotation"),
-        Container(
-          color: Color.fromARGB(0, 188, 41, 210),
-          width: 100,
-          height: 100,
+        ConstrainedBox(
+            constraints: BoxConstraints.tightFor(width: 200, height: 100),
+            child: Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                          width: 20,
+                          height: 20,
+                          color: Colors.blueGrey.shade600),
+                      Container(
+                          width: 20, height: 20, color: Colors.green.shade300),
+                      Container(
+                          width: 20,
+                          height: 20,
+                          color: Colors.purpleAccent.shade400),
+                      Container(width: 20, height: 20, color: Colors.black87),
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text("Color 1 Primary",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                              )),
+                      Text("Color 1 Secondary",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                              )),
+                      Text("Color 2 Primary",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                              )),
+                      Text("Color 2 Secondary",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                              )),
+                    ],
+                  )
+                ],
+              ),
+            )),
+        ConstrainedBox(
+          constraints: BoxConstraints.tightFor(height: 70),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text("Texture 1 Name",
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                        )),
+                Text("Texture 2 Name",
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                        )),
+                Text("Texture 3 Name",
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                        )),
+              ]),
         ),
-        Consumer<AppState>(builder: (context, appState, child) {
-          // // Access the phyl variable from the AppState
-          // col1Prim = appState.subFileTable.subFileDataList[0].col1Primary;
-          // int red = int.parse(col1Prim.substring(0, 2), radix: 16);
-          // int green = int.parse(col1Prim.substring(2, 4), radix: 16);
-          // int blue = int.parse(col1Prim.substring(4, 6), radix: 16);
-          // int alpha = int.parse(col1Prim.substring(6, 8), radix: 16);
-          int alpha = 100;
-          int red = 50;
-          int green = 200;
-          int blue = 150;
-          return ColoredBox(color: Color.fromARGB(alpha, red, green, blue));
-        }),
-
-        // nop
-        TextButton(onPressed: () => noop(), child: Text("Colors")),
-        TextButton(onPressed: () => noop(), child: Text("Texture Names")),
-        TextButton(onPressed: () => noop(), child: Text("Settings")),
-        TextButton(onPressed: () => noop(), child: Text("mTex1, mtex2, mtex3")),
+        rowOfThree(context, "mTex1", "mTex2", "mTex3"),
+        rowOfThree(context, "texScale1", "texScale2", "texScale3"),
+        rowOfThree(context, "texTranslate1", "texTranslate2", "texTranslate3"),
+        rowOfThree(context, "texRotate1", "texRotate2", "texRotate3"),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            TextButton(onPressed: () => noop(), child: Text("texWarp?")),
+            TextButton(onPressed: () => noop(), child: Text("texReverse?"))
+          ],
+        ),
       ],
+    );
+  }
+
+  Row colorGenerator(BuildContext context, color, name) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Flexible(
+          child: ConstrainedBox(
+              constraints: BoxConstraints(
+                  minHeight: 50, maxHeight: 100, minWidth: 100, maxWidth: 200)),
+        ),
+        ConstrainedBox(
+          constraints: BoxConstraints(
+              minHeight: 50, maxHeight: 100, minWidth: 50, maxWidth: 100),
+          child: ColoredBox(color: color),
+        ),
+        Flexible(
+          child: ConstrainedBox(
+              constraints: BoxConstraints(
+                  minHeight: 50, maxHeight: 100, minWidth: 50, maxWidth: 100)),
+        ),
+        Text(name,
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                )),
+      ],
+    );
+  }
+
+  Widget alphaRefs(context) {
+    return ConstrainedBox(
+        constraints: BoxConstraints.tightFor(height: 70),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                TextButton(
+                    onPressed: () => noop(), child: Text("AlphaComparison 0")),
+                Container(width: 10),
+                TextButton(
+                    onPressed: () => noop(), child: Text("Input Text here")),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                TextButton(
+                    onPressed: () => noop(), child: Text("AlphaComparison 1")),
+                Container(width: 10),
+                TextButton(
+                    onPressed: () => noop(), child: Text("Input Text here"))
+              ],
+            ),
+          ],
+        ));
+  }
+
+  Widget randOffs(context) {
+    return ConstrainedBox(
+      constraints: BoxConstraints.tightFor(height: 100),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              TextButton(
+                  onPressed: () => noop(), child: Text("Rot Offset Rand 1")),
+              Container(width: 10),
+              TextButton(
+                  onPressed: () => noop(), child: Text("Input Text here"))
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              TextButton(
+                  onPressed: () => noop(), child: Text("Rot Offset Rand 2")),
+              Container(width: 10),
+              TextButton(
+                  onPressed: () => noop(), child: Text("Input Text here"))
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              TextButton(
+                  onPressed: () => noop(), child: Text("Rot Offset Rand 3")),
+              Container(width: 10),
+              TextButton(
+                  onPressed: () => noop(), child: Text("Input Text here"))
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -156,8 +397,16 @@ class _SubFilePageState extends State<SubFilePage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        TextButton(onPressed: () => noop(), child: Text("Misc")),
-        TextButton(onPressed: () => noop(), child: Text("Misc Settings")),
+        alphaRefs(context),
+        randOffs(context),
+        Row(
+          children: [
+            TextButton(onPressed: () => noop(), child: Text("Rotate Offset")),
+            TextButton(onPressed: () => noop(), child: Text("feld1")),
+            TextButton(onPressed: () => noop(), child: Text("feld2")),
+            TextButton(onPressed: () => noop(), child: Text("feld3"))
+          ],
+        ),
         TextButton(onPressed: () => noop(), child: Text("Emitter Details")),
         TextButton(onPressed: () => noop(), child: Text("Shape")),
         TextButton(onPressed: () => noop(), child: Text("Dims")),
@@ -182,62 +431,15 @@ class _SubFilePageState extends State<SubFilePage> {
     return Container(
       decoration: BoxDecoration(color: Colors.blue.shade100),
       child: Column(children: <Widget>[
-        SizedBox(
-            child: Container(
-          color: Colors.blue.shade200,
-          child: Row(
-            children: <Widget>[
-              TextButton(onPressed: () => noop(), child: const Text("Save")),
-              TextButton(onPressed: () => noop(), child: const Text("Save as")),
-              TextButton(onPressed: () => noop(), child: const Text("Open")),
-            ],
-          ),
-        )),
-        SizedBox(
-          child: Container(
-            color: Colors.blue.shade100,
-            child: ElevatedButtonTheme(
-              data: ElevatedButtonThemeData(
-                  style: ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll(Colors.teal.shade300),
-                shape: MaterialStatePropertyAll(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.elliptical(10, 7)))),
-              )),
-              child:
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: ElevatedButton(
-                    onPressed: () => noop(),
-                    child: const Text("SubFile1"),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: ElevatedButton(
-                      onPressed: () => noop(), child: const Text("SubFile2")),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: ElevatedButton(
-                      onPressed: () => noop(), child: const Text("SubFile3")),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: ElevatedButton(
-                      onPressed: () => noop(), child: const Text("+")),
-                ),
-              ]),
-            ),
-          ),
-        ),
+        topMenu(context),
+        listOfSubfiles(context),
         Expanded(
             child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            firstColumn(context),
-            secondColumn(context),
-            thirdColumn(context),
+            Expanded(flex: 3, child: firstColumn(context)),
+            Expanded(flex: 3, child: secondColumn(context)),
+            Expanded(flex: 3, child: thirdColumn(context)),
           ],
         )),
       ]),
