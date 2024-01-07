@@ -306,28 +306,41 @@ class _SubFilePageState extends State<SubFilePage> {
 
   Widget alphaRefs(context) {
     return ConstrainedBox(
-        constraints: BoxConstraints.tightFor(height: 70),
+        constraints: BoxConstraints.tightFor(height: 100),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                TextButton(
-                    onPressed: () => noop(), child: Text("AlphaComparison 0")),
+                Text("AlphaComparison 0",
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: Theme.of(context).colorScheme.primary)),
                 Container(width: 10),
-                TextButton(
-                    onPressed: () => noop(), child: Text("Input Text here")),
+                Expanded(
+                  child: TextField(
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          color: Theme.of(context).colorScheme.primary)),
+                ),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                TextButton(
-                    onPressed: () => noop(), child: Text("AlphaComparison 1")),
+                Text("AlphaComparison 1",
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: Theme.of(context).colorScheme.primary)),
                 Container(width: 10),
-                TextButton(
-                    onPressed: () => noop(), child: Text("Input Text here"))
+                Expanded(
+                  child: TextField(
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(color: Theme.of(context).colorScheme.primary),
+                    // strutStyle: StrutStyle.fromTextStyle(
+                    //     Theme.of(context).textTheme.bodyMedium!),
+                  ),
+                ),
               ],
             ),
           ],
@@ -382,15 +395,64 @@ class _SubFilePageState extends State<SubFilePage> {
         alphaRefs(context),
         randOffs(context),
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            TextButton(onPressed: () => noop(), child: Text("Rotate Offset")),
-            TextButton(onPressed: () => noop(), child: Text("feld1")),
-            TextButton(onPressed: () => noop(), child: Text("feld2")),
-            TextButton(onPressed: () => noop(), child: Text("feld3"))
+            Text("Rotate Offset",
+                style: Theme.of(context).textTheme.bodyMedium),
+            Expanded(
+              flex: 1,
+              child: TextField(),
+            ),
+            SizedBox(
+              width: 10,
+              height: 10,
+            ),
+            Expanded(
+              flex: 1,
+              child: TextField(),
+            ),
+            SizedBox(
+              width: 10,
+              height: 10,
+            ),
+            Expanded(
+              flex: 1,
+              child: TextField(),
+            ),
           ],
         ),
-        TextButton(onPressed: () => noop(), child: Text("Emitter Details")),
-        TextButton(onPressed: () => noop(), child: Text("Shape")),
+        Text("Emitter Details", style: Theme.of(context).textTheme.bodyLarge),
+        Column(
+          children: [
+            TextButton(onPressed: () => noop(), child: Text("Shape")),
+            SizedBox(
+              width: 10,
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    TextButton(onPressed: () => noop(), child: Text("Point")),
+                    TextButton(onPressed: () => noop(), child: Text("Disc")),
+                    TextButton(onPressed: () => noop(), child: Text("Line")),
+                    TextButton(onPressed: () => noop(), child: Text("Cube")),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    TextButton(
+                        onPressed: () => noop(), child: Text("Cylinder")),
+                    TextButton(onPressed: () => noop(), child: Text("Sphere")),
+                    TextButton(onPressed: () => noop(), child: Text("Torus")),
+                  ],
+                ),
+              ],
+            )
+          ],
+        ),
         TextButton(onPressed: () => noop(), child: Text("Dims")),
       ],
     );
@@ -419,9 +481,24 @@ class _SubFilePageState extends State<SubFilePage> {
             child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Expanded(flex: 3, child: firstColumn(context)),
-            Expanded(flex: 3, child: secondColumn(context)),
-            Expanded(flex: 3, child: thirdColumn(context)),
+            Expanded(
+                flex: 3,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: firstColumn(context),
+                )),
+            Expanded(
+                flex: 3,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: secondColumn(context),
+                )),
+            Expanded(
+                flex: 3,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: thirdColumn(context),
+                )),
           ],
         )),
       ]),
