@@ -1,4 +1,4 @@
-import 'package:flutter_app_3/section_header.dart';
+import 'package:breff_editor/section_header.dart';
 
 import 'block_header.dart';
 

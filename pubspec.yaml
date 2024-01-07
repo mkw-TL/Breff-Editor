@@ -1,4 +1,4 @@
-name: flutter_app_3
+name: breff_editor
 description: "A new Flutter project."
 publish_to: 'none'
 version: 0.1.0
@@ -30,3 +30,7 @@ flutter:
 flutter_rename_app_plus3:
   application_name: "TL's Breff Editor"
   dart_package_name: breff_editor
+  application_id: com.android.tl_breff_editor
+  bundle_id: com.ios.tl_breff_editor
+  android_package_name: com.breff_editor.app
+  ios_bundle_name: TL's Breff Editor
