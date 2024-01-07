@@ -15,6 +15,7 @@ import 'subfile_data.dart';
 import 'block_header.dart';
 import 'subfile_table.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tabbed_view/tabbed_view.dart';
 // import 'package:get/get.dart';
 
 List<Widget> subFileWidgets = <Widget>[];
@@ -128,42 +129,46 @@ class _SubFilePageState extends State<SubFilePage> {
     ));
   }
 
-  Widget listOfSubfiles(context) {
-    return Container(
-      color: Colors.blue.shade100,
-      child: ElevatedButtonTheme(
-        data: ElevatedButtonThemeData(
-            style: ButtonStyle(
-          backgroundColor: MaterialStatePropertyAll(Colors.teal.shade300),
-          shape: MaterialStatePropertyAll(RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.elliptical(10, 7)))),
-        )),
-        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: ElevatedButton(
-              onPressed: () => noop(),
-              child: const Text("SubFile1"),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: ElevatedButton(
-                onPressed: () => noop(), child: const Text("SubFile2")),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: ElevatedButton(
-                onPressed: () => noop(), child: const Text("SubFile3")),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(2.0),
-            child:
-                ElevatedButton(onPressed: () => noop(), child: const Text("+")),
-          ),
-        ]),
+  Widget tabs(context) {
+    List<TabData> tabs = [];
+    for (var i = 1; i < 7; i++) {
+      Widget tabContent = Center(child: Text('Content $i'));
+      tabs.add(TabData(text: 'Tab $i', content: tabContent));
+    }
+
+    TabbedViewThemeData themeData = TabbedViewThemeData();
+    themeData.tabsArea
+      ..border = Border(bottom: BorderSide(color: Colors.teal[500]!, width: 3))
+      ..middleGap = 6;
+
+    Radius radius = Radius.circular(10.0);
+    BorderRadiusGeometry? borderRadius =
+        BorderRadius.only(topLeft: radius, topRight: radius);
+
+    themeData.tab
+      ..padding = EdgeInsets.fromLTRB(10, 4, 10, 4)
+      ..buttonsOffset = 8
+      ..decoration = BoxDecoration(
+          shape: BoxShape.rectangle,
+          color: Colors.teal[200],
+          borderRadius: borderRadius)
+      ..selectedStatus.decoration =
+          BoxDecoration(color: Colors.teal[500], borderRadius: borderRadius)
+      ..highlightedStatus.decoration =
+          BoxDecoration(color: Colors.teal[200], borderRadius: borderRadius);
+
+    return (ConstrainedBox(
+      child: TabbedViewTheme(
+        data: themeData,
+        child: TabbedView(
+            controller: TabbedViewController(tabs),
+            contentBuilder: (BuildContext context, int tabIndex) {
+              int i = tabIndex + 1;
+              return Container(child: Text('Content $i'));
+            }),
       ),
-    );
+      constraints: BoxConstraints(maxHeight: 60),
+    ));
   }
 
   Widget rowOfThree(context, str1, str2, str3) {
@@ -470,38 +475,44 @@ class _SubFilePageState extends State<SubFilePage> {
     );
   }
 
+  Widget subFile(context) {
+    return Expanded(
+        child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Expanded(
+            flex: 3,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: firstColumn(context),
+            )),
+        Expanded(
+            flex: 3,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: secondColumn(context),
+            )),
+        Expanded(
+            flex: 3,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: thirdColumn(context),
+            )),
+      ],
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(color: Colors.blue.shade100),
-      child: Column(children: <Widget>[
-        topMenu(context),
-        listOfSubfiles(context),
-        Expanded(
-            child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Expanded(
-                flex: 3,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: firstColumn(context),
-                )),
-            Expanded(
-                flex: 3,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: secondColumn(context),
-                )),
-            Expanded(
-                flex: 3,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: thirdColumn(context),
-                )),
-          ],
-        )),
-      ]),
+      child: Column(
+        children: <Widget>[
+          topMenu(context),
+          tabs(context),
+          subFile(context),
+        ],
+      ),
     );
   }
 }
