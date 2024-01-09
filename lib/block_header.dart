@@ -26,7 +26,8 @@ class BlockHeader {
   }
 
   void parseThis(bytes) {
-    String thisBytes = splitAtExcl(bytes, 32)[0];
+    String thisBytes = splitAtExcl(bytes, 24 * 2)[0];
+    thisBytes = splitAtExcl(thisBytes, 8 * 2)[1]; // ignore first 8 chars
     setTotalBytes(splitAtExcl(thisBytes, 8)[0]);
     thisBytes = splitAtExcl(thisBytes, 8)[1];
     setSizeHeader(splitAtExcl(thisBytes, 4)[0]);
@@ -45,7 +46,7 @@ class BlockHeader {
   }
 
   String getOtherBytes(bytes) {
-    return splitAtExcl(bytes, 32)[1];
+    return splitAtExcl(bytes, 24 * 2)[1];
   }
 
   void setTotalBytes(String val) {

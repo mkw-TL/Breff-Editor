@@ -1,5 +1,5 @@
 // import 'dart:async';
-// import 'dart:io';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -63,21 +63,26 @@ class AppState extends ChangeNotifier {
   );
 
   void pickFile() async {
-    phyl = await openFile(acceptedTypeGroups: [typeGroup]);
-    if (phyl != null) {
-      debugPrint(phyl!.path.toString());
-      debugPrint(phyl!.name.toString());
-      Uint8List byteList = await phyl!.readAsBytes();
-      StringBuffer buff = StringBuffer();
-      int i = 0;
-      for (var _ in byteList) {
-        String tempString = byteList[i].toRadixString(16).padLeft(2, "0");
-        buff.write(tempString);
-        i++;
+    if (phyl == null) {
+      phyl = await openFile(acceptedTypeGroups: [typeGroup]);
+      if (phyl != null) {
+        debugPrint(phyl!.path.toString());
+        debugPrint(phyl!.name.toString());
+        Uint8List byteList = await phyl!.readAsBytes();
+        StringBuffer buff = StringBuffer();
+        int i = 0;
+        for (var _ in byteList) {
+          String tempString = byteList[i].toRadixString(16).padLeft(2, "0");
+          buff.write(tempString);
+          i++;
+        }
+        bits = buff.toString();
+        debugPrint(bits);
+        notifyListeners();
       }
-      bits = buff.toString();
-      debugPrint(bits);
-      notifyListeners();
+    } else {
+      print("There is an open file in the editor. Unimplemented functionality");
+      // popup();
     }
   }
 
@@ -90,7 +95,7 @@ class AppState extends ChangeNotifier {
     subFileTable = SubFileTable(data: bits);
   }
 
-  void saveFile() {
+  Future<File?> saveFile() async {
     StringBuffer out = StringBuffer();
     out.write("52454646FEFF0009");
     out.write(block.getStr());
@@ -98,7 +103,18 @@ class AppState extends ChangeNotifier {
     out.write(subFileTable.getStr());
     String res = out.toString();
     print(res.length);
+    print(res);
+    if (phyl == null) {
+      noop(); // TODO
+    }
+    File file = File(phyl!.path);
+    return file.writeAsString(res);
     // assert(res.length == int.parse(block.getThisBytes(), radix: 16));
+  }
+
+  void saveAs() {
+    // popupSaveAs();
+    saveFile();
   }
 }
 

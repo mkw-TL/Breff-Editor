@@ -3,8 +3,10 @@ import 'package:breff_editor/section_header.dart';
 import 'block_header.dart';
 
 void main() {
+  print("aa");
   Testing test = Testing();
   test.testBlockHeader();
+  print("here");
   test.testSectionHeader();
 }
 
@@ -12,25 +14,30 @@ class Testing {
   Testing();
 
   void testBlockHeader() {
-    String bits = "000009C00010000152454646000009A801234567";
+    String bits = "52454646FEFF0009000009C00010000152454646000009A812345678";
     BlockHeader block = BlockHeader(bytes: bits);
     print("block here");
-    if (block.getOtherBytes(bits) != "01234567") {
+    if (block.getOtherBytes(bits) != "12345678") {
+      print("here");
       print("other bytes is false");
       print(block.getOtherBytes(bits));
     }
+    print("here2");
     if (block.getStr() != "000009C00010000152454646000009A8") {
       print("block str is false");
       print(block.getStr());
     }
+    print("here3");
     if (block.totalBytes != "000009C0") {
       print("tot bytes is false");
       print(block.totalBytes);
     }
+    print("here4");
     if (block.lenSectionBytesExcHeader != "000009A8") {
       print("len is false");
       print(block.lenSectionBytesExcHeader);
     }
+    print("here5");
     if (block.sizeHeader != "0010") {
       print("size header is false");
       print(block.sizeHeader);
