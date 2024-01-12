@@ -63,6 +63,7 @@ class AppState extends ChangeNotifier {
   );
 
   void pickFile() async {
+    debugPrint(phyl.toString());
     if (phyl == null) {
       phyl = await openFile(acceptedTypeGroups: [typeGroup]);
       if (phyl != null) {
@@ -76,8 +77,9 @@ class AppState extends ChangeNotifier {
           buff.write(tempString);
           i++;
         }
-        bits = buff.toString();
-        debugPrint(bits);
+        debugPrint(phyl.toString());
+        // debugPrint(buff.toString());
+        readFile(buff.toString());
         notifyListeners();
       }
     } else {
@@ -87,12 +89,15 @@ class AppState extends ChangeNotifier {
   }
 
   void readFile(String bits) {
-    bits = splitAtExcl(bits, 8)[1]; // remove first 8 bytes as padding
+    bits = splitAtExcl(bits, 8 * 2)[1]; // remove first 8 bytes as padding
     block = BlockHeader(bytes: bits);
     bits = block.getOtherBytes(bits);
+    debugPrint("block is getStr = ${block.getStr()}");
     sectionHeader = SectionHeader(bytes: bits);
+    debugPrint("section header is getStr = ${sectionHeader.getStr()}");
     bits = sectionHeader.getOtherBytes(bits);
     subFileTable = SubFileTable(data: bits);
+    debugPrint("in main, subFileTable is ${subFileTable.getStr()}");
   }
 
   Future<File?> saveFile() async {
@@ -112,8 +117,25 @@ class AppState extends ChangeNotifier {
     // assert(res.length == int.parse(block.getThisBytes(), radix: 16));
   }
 
-  void saveAs() {
-    // popupSaveAs();
+  void saveAs(context) {
+    showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => Dialog(
+            child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      const Text('This is a typical dialog.'),
+                      const SizedBox(height: 15),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text('Close'),
+                      )
+                    ]))));
     saveFile();
   }
 }
@@ -137,9 +159,15 @@ class _SubFilePageState extends State<SubFilePage> {
       color: Colors.blue.shade200,
       child: Row(
         children: <Widget>[
-          TextButton(onPressed: () => noop(), child: const Text("Save")),
-          TextButton(onPressed: () => noop(), child: const Text("Save as")),
-          TextButton(onPressed: () => noop(), child: const Text("Open")),
+          TextButton(
+              onPressed: () => AppState().saveAs(context),
+              child: const Text("Save")),
+          TextButton(
+              onPressed: () => AppState().saveFile(),
+              child: const Text("Save as")),
+          TextButton(
+              onPressed: () => AppState().pickFile(),
+              child: const Text("Open")),
         ],
       ),
     ));

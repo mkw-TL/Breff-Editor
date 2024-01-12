@@ -6,7 +6,9 @@ class DataProcessor {
   DataProcessor(this.dat);
 
   String chopAndAssign(int length) {
-    var result = dat.substring(0, length);
+    String result = int.parse(dat.substring(0, length), radix: 16)
+        .toRadixString(16)
+        .padLeft(length, "0");
     dat = dat.substring(length, dat.length);
     return result;
   }
@@ -15,14 +17,6 @@ class DataProcessor {
 class SubFileData extends ChangeNotifier {
   List<String> splitAtExcl(String str, int index) {
     return [str.substring(0, index), str.substring(index, str.length)];
-  }
-
-  String first(String str, int index) {
-    return str.substring(0, index);
-  }
-
-  String chop(String str, int index) {
-    return str.substring(index, str.length);
   }
 
   int offset;
@@ -152,18 +146,21 @@ class SubFileData extends ChangeNotifier {
 
   SubFileData(
       {required this.bytes, required this.offset, required this.lenDataBytes}) {
+    // I could clean up the logic here to make it more
+    // stylistically consistant with the other constructors
     String thisBytes = splitAtExcl(bytes, lenDataBytes)[0];
     otherBytes = splitAtExcl(thisBytes, lenDataBytes)[1];
-    String emSize = thisBytes.substring(4, 8);
+    String emSize = thisBytes.substring(8, 16);
     int emSizeInt = int.parse(emSize, radix: 16);
     String emData =
-        thisBytes.substring(8, emSizeInt); // the first header is already read
+        thisBytes.substring(16, emSizeInt); // the first header is already read
     String partAndAnimData = splitAtExcl(thisBytes, emSizeInt)[1];
 
     parseThis(emData, partAndAnimData);
   }
 
   String getStr() {
+    debugPrint("we are now writing a subfile data");
     StringBuffer out = StringBuffer();
     out.write("0000"); // pointer to effect name
     out.write(emBytes);
@@ -294,14 +291,15 @@ class SubFileData extends ChangeNotifier {
     out2.write(texRef3);
     String outStr2 = "";
     if (out2.toString().length != int.parse(partBytes, radix: 16)) {
-      print(out2.toString());
-      print(out2.toString().length);
-      print(partBytes);
-      print(int.parse(partBytes));
+      debugPrint("uh oh. particle data is wrong");
+      debugPrint(out2.toString());
+      debugPrint(out2.toString().length.toString());
+      debugPrint(partBytes);
+      debugPrint(int.parse(partBytes).toString());
     } else {
       outStr2 = out2.toString().padRight(int.parse(partBytes, radix: 16));
     }
-    String outStr3 = animationData;
+    String outStr3 = animationData; // not implemented
     return "$outStr$outStr2$outStr3";
   }
 
@@ -337,6 +335,7 @@ class SubFileData extends ChangeNotifier {
     emAngle = emProc.chopAndAssign(4);
     scale = emProc.chopAndAssign(12);
     rot = emProc.chopAndAssign(12);
+    debugPrint("midst processing subfile data");
     transl = emProc.chopAndAssign(12);
     LODNearest = emProc.chopAndAssign(1);
     LODFurthest = emProc.chopAndAssign(1);
@@ -388,6 +387,7 @@ class SubFileData extends ChangeNotifier {
     gabiHelp2 = emProc.chopAndAssign(1);
     padding1 = emProc.chopAndAssign(1);
     zOffset = emProc.chopAndAssign(4);
+    debugPrint("end of subfile em data");
 
     // particle data
     DataProcessor partProc = DataProcessor(partAndAnimData);
@@ -424,7 +424,11 @@ class SubFileData extends ChangeNotifier {
     texRef2 = partProc.chopAndAssign(int.parse(lenTexRef2, radix: 16));
     lenTexRef3 = partProc.chopAndAssign(2);
     texRef3 = partProc.chopAndAssign(int.parse(lenTexRef1, radix: 16));
+    debugPrint("read in subfile_data");
+    // Spacing and animationData combined together
+    // bad practice, but maybe can get away with it
     animationData = partProc.dat; // no getter needed get rekt java
+    debugPrint("and animation data is $animationData");
   }
 
   String getOtherBytes() {

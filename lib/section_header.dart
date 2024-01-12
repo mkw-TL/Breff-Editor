@@ -1,7 +1,8 @@
-// import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 // import 'package:breff_editor/main.dart';
 
 // class SectionHeader extends ChangeNotifier {
+
 class SectionHeader {
   List<String> splitAtExcl(String str, int index) {
     return [str.substring(0, index), str.substring(index, str.length)];
@@ -17,8 +18,12 @@ class SectionHeader {
   SectionHeader({required this.bytes}) {
     sectionHeaderSize = splitAtExcl(bytes, 8)[0];
     size = int.parse(sectionHeaderSize, radix: 16);
-    String thisBytes = splitAtExcl(
-        bytes, size * 2)[0]; // size in Uint16, rather than Uint8 (byte)
+    String thisBytes =
+        splitAtExcl(bytes, size * 2)[0]; // chars rather than bytes
+    print(
+        "initializing SectionHeader, end of section_header is ${bytes.substring(size * 2 - 8, size * 2)}");
+    print(
+        "initializing SectionHeader, start of subFileTable is ${bytes.substring(size * 2, size * 2 + 8)}");
     otherBytes = splitAtExcl(bytes, size * 2)[1];
     parseThis(thisBytes);
     // ascii + null pointer + fixed space for this and others
@@ -45,7 +50,10 @@ class SectionHeader {
   }
 
   void parseThis(bytes) {
+    print("section_header deals with this data, $bytes");
     setSectionHeaderSize(splitAtExcl(bytes, 8)[0]);
+    debugPrint(
+        "in section_header. our section header size is $sectionHeaderSize");
     String thisBytes = (splitAtExcl(bytes, 24)[1]);
     setAsciiLen(splitAtExcl(thisBytes, 4)[0]);
     thisBytes = splitAtExcl(thisBytes, 4)[1];
@@ -53,6 +61,7 @@ class SectionHeader {
     int asciiLenInt =
         (int.parse(asciiLen, radix: 16) - 1) * 2; // minus one bc null
     asciiName = splitAtExcl(thisBytes, asciiLenInt)[0];
+    debugPrint("parsed section_header");
   }
 
   String getAsciiName() {
@@ -74,22 +83,12 @@ class SectionHeader {
   }
 
   void setSectionHeaderSize(val) {
-    // not really sure if I should have this
-    if (val != null) {
-      sectionHeaderSize = val;
-      //notifyListeners();
-    } else {
-      throw Exception(val);
-    }
+    sectionHeaderSize =
+        int.parse(val, radix: 16).toRadixString(16).padLeft(8, "0");
   }
 
   void setAsciiLen(val) {
-    if (val != null) {
-      asciiLen = val;
-      //notifyListeners();
-    } else {
-      throw Exception(val);
-    }
+    asciiLen = int.parse(val, radix: 16).toRadixString(16).padLeft(4, "0");
   }
 
   String getAsciiLen() {

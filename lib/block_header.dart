@@ -1,4 +1,4 @@
-//import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 //class BlockHeader extends ChangeNotifier {
 class BlockHeader {
@@ -19,48 +19,45 @@ class BlockHeader {
     StringBuffer out = StringBuffer();
     out.write(totalBytes);
     out.write(sizeHeader);
-    out.write("000152454646");
+    out.write("0001524546460000");
     out.write(lenSectionBytesExcHeader);
     String str = out.toString();
     return str;
   }
 
   void parseThis(bytes) {
-    String thisBytes = splitAtExcl(bytes, 24 * 2)[0];
-    thisBytes = splitAtExcl(thisBytes, 8 * 2)[1]; // ignore first 8 chars
+    debugPrint("parsing block");
+    String thisBytes = splitAtExcl(bytes, 16 * 2)[0]; // fixed block length
+    debugPrint("thisBytes is ${thisBytes}");
     setTotalBytes(splitAtExcl(thisBytes, 8)[0]);
     thisBytes = splitAtExcl(thisBytes, 8)[1];
     setSizeHeader(splitAtExcl(thisBytes, 4)[0]);
     thisBytes = splitAtExcl(thisBytes, 4)[1];
     thisBytes = splitAtExcl(thisBytes, 12)[1];
     setLenSectionBytesExclHeader(splitAtExcl(thisBytes, 8)[0]);
-    thisBytes = splitAtExcl(thisBytes, 8)[1];
-    if (thisBytes.length != 0) {
-      print("thisBytes not zero (block header)");
-      print(thisBytes);
-    }
   }
 
   String getThisBytes() {
-    return splitAtExcl(bytes, 32)[0];
+    return splitAtExcl(bytes, 16 * 2)[0];
   }
 
   String getOtherBytes(bytes) {
-    return splitAtExcl(bytes, 24 * 2)[1];
+    return splitAtExcl(bytes, 16 * 2)[1];
   }
 
   void setTotalBytes(String val) {
-    totalBytes = val;
+    totalBytes = int.parse(val, radix: 16).toRadixString(16).padLeft(8, "0");
     //notifyListeners();
   }
 
   void setSizeHeader(String val) {
-    sizeHeader = val;
+    sizeHeader = int.parse(val, radix: 16).toRadixString(16).padLeft(2, "0");
     //notifyListeners();
   }
 
   void setLenSectionBytesExclHeader(String val) {
-    lenSectionBytesExcHeader = val;
+    lenSectionBytesExcHeader =
+        int.parse(val, radix: 16).toRadixString(16).padLeft(4, "0");
     //notifyListeners();
   }
 }
