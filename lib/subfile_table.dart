@@ -38,11 +38,14 @@ class SubFileTable extends ChangeNotifier {
     setSizeTable(splitAtExcl(data, 4 * 2)[0]);
     print("size of table is $sizeTable");
     String thisData = splitAtExcl(data, 8)[1];
+
     setNumEntries(splitAtExcl(thisData, 4)[0]);
     thisData = splitAtExcl(thisData, 4)[1];
     print("number of entries is, $numEntries");
-    thisData = splitAtExcl(thisData, 8)[1]; // padding as well
+
+    thisData = splitAtExcl(thisData, 4)[1]; // padding as well
     print("thisData looks like $thisData");
+
     for (int i = 0; i < int.parse(numEntries, radix: 16); i++) {
       SubFileHeader header = SubFileHeader(data: thisData);
       print("subfile header parsed");

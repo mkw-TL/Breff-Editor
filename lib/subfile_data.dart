@@ -146,15 +146,22 @@ class SubFileData extends ChangeNotifier {
 
   SubFileData(
       {required this.bytes, required this.offset, required this.lenDataBytes}) {
+    print(
+        "am in subfile_data. offset is $offset, lenDataBytes is $lenDataBytes");
     // I could clean up the logic here to make it more
     // stylistically consistant with the other constructors
+    bytes = bytes.substring(offset);
     String thisBytes = splitAtExcl(bytes, lenDataBytes)[0];
     otherBytes = splitAtExcl(thisBytes, lenDataBytes)[1];
-    String emSize = thisBytes.substring(8, 16);
-    int emSizeInt = int.parse(emSize, radix: 16);
-    String emData =
-        thisBytes.substring(16, emSizeInt); // the first header is already read
+    thisBytes = splitAtExcl(thisBytes, 8)[1];
+    int emSizeInt = int.parse(splitAtExcl(thisBytes, 8)[0], radix: 16);
+    print("emSizeInt is $emSizeInt");
+    thisBytes = splitAtExcl(thisBytes, 8)[1];
+    String emData = splitAtExcl(
+        thisBytes, emSizeInt)[0]; // the first header is already read
+    print("emData is $emData");
     String partAndAnimData = splitAtExcl(thisBytes, emSizeInt)[1];
+    print("partAndAnimData is $partAndAnimData");
 
     parseThis(emData, partAndAnimData);
   }
@@ -304,6 +311,7 @@ class SubFileData extends ChangeNotifier {
   }
 
   void parseThis(emData, partAndAnimData) {
+    print("we are now parsing our subfile_data");
     DataProcessor emProc = DataProcessor(emData);
     unknown0 = emProc.chopAndAssign(4);
     emitFlags = emProc.chopAndAssign(3);
@@ -418,6 +426,7 @@ class SubFileData extends ChangeNotifier {
     rotOffsetRand2 = partProc.chopAndAssign(1);
     rotOffsetRand3 = partProc.chopAndAssign(1);
     rotOffset = partProc.chopAndAssign(12);
+    print("subfile_data particle data, before variable texture lengths");
     lenTexRef1 = partProc.chopAndAssign(2);
     texRef1 = partProc.chopAndAssign(int.parse(lenTexRef1, radix: 16));
     lenTexRef2 = partProc.chopAndAssign(2);

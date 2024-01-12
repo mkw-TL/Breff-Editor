@@ -23,16 +23,22 @@ class SubFileHeader extends ChangeNotifier {
   SubFileHeader({required this.data}) {
     asciiLen = splitAtExcl(data, 4)[0];
     int len = int.parse(asciiLen, radix: 16);
-    String thisData = splitAtExcl(data, 8)[1];
-    asciiName = splitAtExcl(thisData, len * 2 - 1)[0]; // bytes and Uint16
+    print("our length of the ascii str is $len");
+
+    String thisData = splitAtExcl(data, 4)[1];
+    print("subFileHeader data to work with is $thisData");
+
+    asciiName = splitAtExcl(thisData, len * 2 - 2)[0]; // bytes and Uint16
     print("our ascii name in subfile_header is, $asciiName");
-    thisData = splitAtExcl(thisData, len * 2 - 1)[1]; // bytes and Uint16
+    thisData = splitAtExcl(thisData, len * 2)[1]; // ignores null terminator
     subFileOffset = splitAtExcl(thisData, 8)[0];
+    print("our subFileOffset is $subFileOffset");
     thisData = splitAtExcl(thisData, 8)[1];
     sizeDataBytes = splitAtExcl(thisData, 8)[0];
+    print("our sizeDataBytes is $sizeDataBytes");
     otherData = splitAtExcl(thisData, 8)[1];
 
-    print("subfile_header otherData was just created");
+    print("subFileData is about to be created");
 
     int offset = int.parse(subFileOffset, radix: 16);
     int lenDataBytes = int.parse(sizeDataBytes, radix: 16);
