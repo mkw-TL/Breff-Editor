@@ -43,7 +43,17 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal.shade300),
         textTheme: GoogleFonts.cabinCondensedTextTheme(textTheme),
       ),
-      home: const Material(child: SubFilePage()),
+      home: Material(
+          child: Container(
+        decoration: BoxDecoration(color: Colors.blue.shade100),
+        child: Column(
+          children: <Widget>[
+            topMenu(context),
+            const Tab(),
+            const SubFilePage(),
+          ],
+        ),
+      )),
     );
   }
 }
@@ -58,6 +68,7 @@ class AppState extends ChangeNotifier {
   late BlockHeader block;
   late SectionHeader sectionHeader;
   late SubFileTable subFileTable;
+  int subFileIdx = 1;
 
   XTypeGroup typeGroup = const XTypeGroup(
     label: 'images',
@@ -119,6 +130,10 @@ class AppState extends ChangeNotifier {
     // assert(res.length == int.parse(block.getThisBytes(), radix: 16));
   }
 
+  void setIdx(int val) {
+    subFileIdx = val;
+  }
+
   void saveAs(context) {
     showDialog<String>(
         context: context,
@@ -142,40 +157,34 @@ class AppState extends ChangeNotifier {
   }
 }
 
-class SubFilePage extends StatefulWidget {
-  const SubFilePage({super.key});
-
-  @override
-  State<SubFilePage> createState() => _SubFilePageState();
-}
-
 void noop() {
   1 + 1;
 }
 
-class _SubFilePageState extends State<SubFilePage> {
-  //
-  Widget topMenu(context) {
-    return SizedBox(
-        child: Container(
-      color: Colors.blue.shade200,
-      child: Row(
-        children: <Widget>[
-          TextButton(
-              onPressed: () => AppState().saveAs(context),
-              child: const Text("Save")),
-          TextButton(
-              onPressed: () => AppState().saveFile(),
-              child: const Text("Save as")),
-          TextButton(
-              onPressed: () => AppState().pickFile(),
-              child: const Text("Open")),
-        ],
-      ),
-    ));
-  }
+Widget topMenu(context) {
+  return SizedBox(
+      child: Container(
+    color: Colors.blue.shade200,
+    child: Row(
+      children: <Widget>[
+        TextButton(
+            onPressed: () => AppState().saveAs(context),
+            child: const Text("Save")),
+        TextButton(
+            onPressed: () => AppState().saveFile(),
+            child: const Text("Save as")),
+        TextButton(
+            onPressed: () => AppState().pickFile(), child: const Text("Open")),
+      ],
+    ),
+  ));
+}
 
-  Widget tabs(context) {
+class Tab extends StatelessWidget {
+  const Tab({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     List<TabData> tabs = [];
     for (var i = 1; i < 7; i++) {
       Widget tabContent = Center(child: Text('Content $i'));
@@ -204,56 +213,29 @@ class _SubFilePageState extends State<SubFilePage> {
           BoxDecoration(color: Colors.teal[200], borderRadius: borderRadius);
 
     return (ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: 60),
+      constraints: BoxConstraints(maxHeight: 50),
       child: TabbedViewTheme(
         data: themeData,
         child: TabbedView(
             controller: TabbedViewController(tabs),
             contentBuilder: (BuildContext context, int tabIndex) {
               int i = tabIndex + 1;
+              AppState().setIdx(i);
               return Animate(
-                  effects: [FadeEffect()], child: Text('Content $i')); // TODO
+                  effects: [FadeEffect()],
+                  child: Container(child: Text('Content $i'))); // TODO
             }),
       ),
     ));
   }
+}
 
-  Widget rowOfThree(context, str1, str2, str3) {
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: 40, maxWidth: 350, minWidth: 100),
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-        Text(
-          str1,
-          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: Theme.of(context).colorScheme.primary,
-              ),
-        ),
-        Expanded(
-          flex: 1,
-          child: TextField(),
-        ),
-        Text(
-          str2,
-          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: Theme.of(context).colorScheme.primary,
-              ),
-        ),
-        Expanded(
-          flex: 1,
-          child: TextField(),
-        ),
-        Text(
-          str3,
-          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: Theme.of(context).colorScheme.primary,
-              ),
-        ),
-        Expanded(
-          flex: 1,
-          child: TextField(),
-        ),
-      ]),
-    );
+class SubFilePage extends StatelessWidget {
+  const SubFilePage({super.key});
+
+  @override
+  Widget build(context) {
+    return subFile(context);
   }
 
   Widget textTabs(context) {
@@ -470,7 +452,50 @@ class _SubFilePageState extends State<SubFilePage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        rowOfThree(context, "Size", "Scale", "Rotation"),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text("Size"),
+            ConstrainedBox(
+                constraints: BoxConstraints(minWidth: 10, maxWidth: 10)),
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 50, minWidth: 20),
+              child: TextField(
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(color: Theme.of(context).colorScheme.primary)),
+            ),
+            ConstrainedBox(
+                constraints: BoxConstraints(minWidth: 10, maxWidth: 10)),
+            Text("Scale"),
+            ConstrainedBox(
+                constraints: BoxConstraints(minWidth: 10, maxWidth: 10)),
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 50, minWidth: 20),
+              child: TextField(
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(color: Theme.of(context).colorScheme.primary)),
+            ),
+            ConstrainedBox(
+                constraints: BoxConstraints(minWidth: 10, maxWidth: 10)),
+            Text("Rotation"),
+            ConstrainedBox(
+                constraints: BoxConstraints(minWidth: 10, maxWidth: 10)),
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 50, minWidth: 20),
+              child: TextField(
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(color: Theme.of(context).colorScheme.primary)),
+            ),
+            ConstrainedBox(
+                constraints: BoxConstraints(minWidth: 10, maxWidth: 10)),
+          ],
+        ),
         ConstrainedBox(
             constraints: BoxConstraints.tightFor(width: 200, height: 100),
             child: Container(
@@ -550,11 +575,6 @@ class _SubFilePageState extends State<SubFilePage> {
                         )),
               ]),
         ),
-        textTabs(context),
-        // rowOfThree(context, "mTex1", "mTex2", "mTex3"),
-        // rowOfThree(context, "texScale1", "texScale2", "texScale3"),
-        // rowOfThree(context, "texTranslate1", "texTranslate2", "texTranslate3"),
-        // rowOfThree(context, "texRotate1", "texRotate2", "texRotate3"),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -562,62 +582,60 @@ class _SubFilePageState extends State<SubFilePage> {
             Checkbox(
               value: _texWrap,
               onChanged: (bool? newValue) {
-                setState(() {
-                  _texWrap = newValue!;
-                });
+                //AppState().setTexWrap(newValue);
               },
             ),
             Text("texReverse?"),
             Checkbox(
-              value: _texReverse,
-              onChanged: (bool? newValue) {
-                setState(() {
-                  _texReverse = newValue!;
-                });
-              },
-            )
+                value: _texReverse,
+                onChanged: (bool? newValue) {
+                  //AppState().setTexReverse(newValue);
+                }),
           ],
         ),
+        textTabs(context),
       ],
     );
   }
 
   Widget alphaRefs(context) {
+    bool _alphaRef0 = false;
+    bool _alphaRef1 = false;
     return ConstrainedBox(
         constraints: BoxConstraints.tightFor(height: 100),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Row(
+            Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text("AlphaComparison 0",
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: Theme.of(context).colorScheme.primary)),
-                Container(width: 10),
-                Expanded(
-                  child: TextField(
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: Theme.of(context).colorScheme.primary)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("AlphaComparison 0",
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: Theme.of(context).colorScheme.primary)),
+                    Container(width: 10),
+                    Checkbox(
+                        value: _alphaRef0,
+                        onChanged: (bool? newValue) {
+                          //AppState().setAlphaRef0(newValue);
+                        }),
+                  ],
                 ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text("AlphaComparison 1",
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: Theme.of(context).colorScheme.primary)),
-                Container(width: 10),
-                Expanded(
-                  child: TextField(
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(color: Theme.of(context).colorScheme.primary),
-                    // strutStyle: StrutStyle.fromTextStyle(
-                    //     Theme.of(context).textTheme.bodyMedium!),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("AlphaComparison 1",
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: Theme.of(context).colorScheme.primary)),
+                    Container(width: 10),
+                    Checkbox(
+                        value: _alphaRef1,
+                        onChanged: (bool? newValue) {
+                          //AppState().setAlphaRef1(newValue);
+                        }),
+                  ],
                 ),
               ],
             ),
@@ -769,19 +787,5 @@ class _SubFilePageState extends State<SubFilePage> {
         ),
       ]),
     ));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(color: Colors.blue.shade100),
-      child: Column(
-        children: <Widget>[
-          topMenu(context),
-          tabs(context),
-          subFile(context),
-        ],
-      ),
-    );
   }
 }
