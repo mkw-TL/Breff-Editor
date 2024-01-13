@@ -212,7 +212,7 @@ class _SubFilePageState extends State<SubFilePage> {
             contentBuilder: (BuildContext context, int tabIndex) {
               int i = tabIndex + 1;
               return Animate(
-                  effects: [FadeEffect()], child: Text('Content $i'));
+                  effects: [FadeEffect()], child: Text('Content $i')); // TODO
             }),
       ),
     ));
@@ -294,140 +294,170 @@ class _SubFilePageState extends State<SubFilePage> {
             contentBuilder: (BuildContext context, int tabIndex) {
               int i = tabIndex + 1;
               return Animate(
-                  effects: [FadeEffect()],
-                  child: Column(
+                effects: [FadeEffect()],
+                child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("mTex$i"),
-                          ConstrainedBox(
-                              constraints:
-                                  BoxConstraints(minWidth: 10, maxWidth: 10)),
-                          ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: 40),
-                            child: TextField(
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary)),
-                          ),
-                        ],
-                      ),
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("mTex$i"),
+                            ConstrainedBox(
+                                constraints:
+                                    BoxConstraints(minWidth: 10, maxWidth: 10)),
+                            ConstrainedBox(
+                              constraints: BoxConstraints(maxWidth: 20),
+                              child: TextField(
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary)),
+                            ),
+                            ConstrainedBox(
+                                constraints:
+                                    BoxConstraints(minWidth: 10, maxWidth: 10)),
+                            Text("mScale$i"),
+                            ConstrainedBox(
+                                constraints:
+                                    BoxConstraints(minWidth: 10, maxWidth: 10)),
+                            ConstrainedBox(
+                              constraints: BoxConstraints(maxWidth: 20),
+                              child: TextField(
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary)),
+                            ),
+                            ConstrainedBox(
+                                constraints:
+                                    BoxConstraints(minWidth: 10, maxWidth: 10)),
+                            ConstrainedBox(
+                              constraints: BoxConstraints(maxWidth: 20),
+                              child: TextField(
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary)),
+                            ),
+                            ConstrainedBox(
+                                constraints:
+                                    BoxConstraints(minWidth: 10, maxWidth: 10)),
+                            ConstrainedBox(
+                              constraints: BoxConstraints(maxWidth: 20),
+                              child: TextField(
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary)),
+                            ),
+                          ]),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("mScale$i"),
-                          Expanded(
-                            child: TextField(
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary)),
-                          ),
-                          Expanded(
-                            child: TextField(
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary)),
-                          ),
-                          Expanded(
-                            child: TextField(
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary)),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("mTranslate$i"),
-                          Expanded(
-                            child: TextField(
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary)),
-                          ),
-                          Expanded(
-                            child: TextField(
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary)),
-                          ),
-                          Expanded(
-                            child: TextField(
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary)),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("mRotate$i"),
-                          Expanded(
-                            child: TextField(
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary)),
-                          ),
-                          Expanded(
-                            child: TextField(
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary)),
-                          ),
-                          Expanded(
-                            child: TextField(
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary)),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ));
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("mTranslate$i"),
+                            ConstrainedBox(
+                                constraints:
+                                    BoxConstraints(minWidth: 10, maxWidth: 10)),
+                            ConstrainedBox(
+                              constraints: BoxConstraints(maxWidth: 20),
+                              child: TextField(
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary)),
+                            ),
+                            ConstrainedBox(
+                                constraints:
+                                    BoxConstraints(minWidth: 10, maxWidth: 10)),
+                            ConstrainedBox(
+                              constraints: BoxConstraints(maxWidth: 20),
+                              child: TextField(
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary)),
+                            ),
+                            ConstrainedBox(
+                                constraints:
+                                    BoxConstraints(minWidth: 10, maxWidth: 10)),
+                            ConstrainedBox(
+                              constraints: BoxConstraints(maxWidth: 20),
+                              child: TextField(
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary)),
+                            ),
+                            ConstrainedBox(
+                                constraints:
+                                    BoxConstraints(minWidth: 10, maxWidth: 10)),
+                            Text("mRotate$i"),
+                            ConstrainedBox(
+                                constraints:
+                                    BoxConstraints(minWidth: 10, maxWidth: 10)),
+                            ConstrainedBox(
+                              constraints: BoxConstraints(maxWidth: 20),
+                              child: TextField(
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary)),
+                            ),
+                            ConstrainedBox(
+                                constraints:
+                                    BoxConstraints(minWidth: 10, maxWidth: 10)),
+                            ConstrainedBox(
+                              constraints: BoxConstraints(maxWidth: 20),
+                              child: TextField(
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary)),
+                            ),
+                            ConstrainedBox(
+                                constraints:
+                                    BoxConstraints(minWidth: 10, maxWidth: 10)),
+                            ConstrainedBox(
+                              constraints: BoxConstraints(maxWidth: 20),
+                              child: TextField(
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary)),
+                            ),
+                          ]),
+                    ]),
+              );
             }),
       ),
     ));
