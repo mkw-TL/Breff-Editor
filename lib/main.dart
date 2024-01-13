@@ -8,6 +8,8 @@ import 'package:breff_editor/block_header.dart';
 // import 'package:file_picker/file_picker.dart'; // other
 import 'package:file_selector/file_selector.dart';
 import 'package:desktop_window/desktop_window.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:multi_split_view/multi_split_view.dart';
 import 'package:provider/provider.dart';
 import 'subfile_header.dart';
 import 'section_header.dart';
@@ -202,16 +204,17 @@ class _SubFilePageState extends State<SubFilePage> {
           BoxDecoration(color: Colors.teal[200], borderRadius: borderRadius);
 
     return (ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: 60),
       child: TabbedViewTheme(
         data: themeData,
         child: TabbedView(
             controller: TabbedViewController(tabs),
             contentBuilder: (BuildContext context, int tabIndex) {
               int i = tabIndex + 1;
-              return Container(child: Text('Content $i'));
+              return Animate(
+                  effects: [FadeEffect()], child: Text('Content $i'));
             }),
       ),
-      constraints: BoxConstraints(maxHeight: 60),
     ));
   }
 
@@ -521,28 +524,24 @@ class _SubFilePageState extends State<SubFilePage> {
 
   Widget subFile(context) {
     return Expanded(
-        child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Expanded(
-            flex: 3,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: firstColumn(context),
-            )),
-        Expanded(
-            flex: 3,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: secondColumn(context),
-            )),
-        Expanded(
-            flex: 3,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: thirdColumn(context),
-            )),
-      ],
+        child: MultiSplitViewTheme(
+      data: MultiSplitViewThemeData(
+          dividerPainter:
+              DividerPainters.grooved1(highlightedColor: Colors.indigo[900]!)),
+      child: MultiSplitView(children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: firstColumn(context),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: secondColumn(context),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: thirdColumn(context),
+        ),
+      ]),
     ));
   }
 
