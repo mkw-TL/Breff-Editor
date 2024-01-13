@@ -21,6 +21,7 @@ dependencies:
   tabbed_view: '1.17.0'
   multi_split_view: '2.4.0'
   flutter_animate: '4.4.0'
+  toggle_switch: '2.1.0'
 
 dev_dependencies:
   flutter_test:

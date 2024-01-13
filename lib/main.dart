@@ -256,7 +256,186 @@ class _SubFilePageState extends State<SubFilePage> {
     );
   }
 
+  Widget textTabs(context) {
+    int numActiveTexs = 3; // TODO
+    List<TabData> tabs = [];
+    for (var i = 1; i < numActiveTexs + 1; i++) {
+      Widget tabContent = Center(child: Text('Tex $i'));
+      tabs.add(TabData(text: 'Tex $i', content: tabContent));
+    }
+
+    TabbedViewThemeData themeData = TabbedViewThemeData();
+    themeData.tabsArea
+      ..border = Border(bottom: BorderSide(color: Colors.teal[500]!, width: 3))
+      ..middleGap = 6;
+
+    Radius radius = Radius.circular(10.0);
+    BorderRadiusGeometry? borderRadius =
+        BorderRadius.only(topLeft: radius, topRight: radius);
+
+    themeData.tab
+      ..padding = EdgeInsets.fromLTRB(10, 4, 10, 4)
+      ..buttonsOffset = 4
+      ..decoration = BoxDecoration(
+          shape: BoxShape.rectangle,
+          color: Colors.teal[200],
+          borderRadius: borderRadius)
+      ..selectedStatus.decoration =
+          BoxDecoration(color: Colors.teal[500], borderRadius: borderRadius)
+      ..highlightedStatus.decoration =
+          BoxDecoration(color: Colors.teal[200], borderRadius: borderRadius);
+
+    return (ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: 200),
+      child: TabbedViewTheme(
+        data: themeData,
+        child: TabbedView(
+            controller: TabbedViewController(tabs),
+            contentBuilder: (BuildContext context, int tabIndex) {
+              int i = tabIndex + 1;
+              return Animate(
+                  effects: [FadeEffect()],
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("mTex$i"),
+                          ConstrainedBox(
+                              constraints:
+                                  BoxConstraints(minWidth: 10, maxWidth: 10)),
+                          ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: 40),
+                            child: TextField(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary)),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("mScale$i"),
+                          Expanded(
+                            child: TextField(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary)),
+                          ),
+                          Expanded(
+                            child: TextField(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary)),
+                          ),
+                          Expanded(
+                            child: TextField(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary)),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("mTranslate$i"),
+                          Expanded(
+                            child: TextField(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary)),
+                          ),
+                          Expanded(
+                            child: TextField(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary)),
+                          ),
+                          Expanded(
+                            child: TextField(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary)),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("mRotate$i"),
+                          Expanded(
+                            child: TextField(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary)),
+                          ),
+                          Expanded(
+                            child: TextField(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary)),
+                          ),
+                          Expanded(
+                            child: TextField(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary)),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ));
+            }),
+      ),
+    ));
+  }
+
   Widget firstColumn(BuildContext context) {
+    bool _texReverse = false;
+    bool _texWrap = false;
     // String col1Prim;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -341,15 +520,32 @@ class _SubFilePageState extends State<SubFilePage> {
                         )),
               ]),
         ),
-        rowOfThree(context, "mTex1", "mTex2", "mTex3"),
-        rowOfThree(context, "texScale1", "texScale2", "texScale3"),
-        rowOfThree(context, "texTranslate1", "texTranslate2", "texTranslate3"),
-        rowOfThree(context, "texRotate1", "texRotate2", "texRotate3"),
+        textTabs(context),
+        // rowOfThree(context, "mTex1", "mTex2", "mTex3"),
+        // rowOfThree(context, "texScale1", "texScale2", "texScale3"),
+        // rowOfThree(context, "texTranslate1", "texTranslate2", "texTranslate3"),
+        // rowOfThree(context, "texRotate1", "texRotate2", "texRotate3"),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            TextButton(onPressed: () => noop(), child: Text("texWarp?")),
-            TextButton(onPressed: () => noop(), child: Text("texReverse?"))
+            Text("texWrap?"),
+            Checkbox(
+              value: _texWrap,
+              onChanged: (bool? newValue) {
+                setState(() {
+                  _texWrap = newValue!;
+                });
+              },
+            ),
+            Text("texReverse?"),
+            Checkbox(
+              value: _texReverse,
+              onChanged: (bool? newValue) {
+                setState(() {
+                  _texReverse = newValue!;
+                });
+              },
+            )
           ],
         ),
       ],
