@@ -44,16 +44,16 @@ class SubFileTable extends ChangeNotifier {
     print("number of entries is, $numEntries");
 
     thisData = splitAtExcl(thisData, 4)[1]; // padding as well
-    print("thisData looks like $thisData");
+    print("subfile table gives contains, $thisData");
 
     for (int i = 0; i < int.parse(numEntries, radix: 16); i++) {
       SubFileHeader header = SubFileHeader(data: thisData);
       print("subfile header parsed");
       appendToHeaderList(header);
-      int offset = int.parse(header.getSubFileOffset() * 2, radix: 16);
-      int lenDataBytes = int.parse(header.sizeDataBytes, radix: 16);
-      SubFileData dat = SubFileData(
-          bytes: thisData, offset: offset, lenDataBytes: lenDataBytes);
+      int offset = int.parse(header.getSubFileOffset(), radix: 16) * 2;
+      int lenDataBytes = int.parse(header.sizeDataBytes, radix: 16) * 2;
+      SubFileData dat =
+          SubFileData(bytes: data, offset: offset, lenDataBytes: lenDataBytes);
       appendToDataList(dat);
       print("subfile data parsed");
       thisData = header.getOtherData(thisData); // chop off header part

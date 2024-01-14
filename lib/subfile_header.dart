@@ -37,13 +37,6 @@ class SubFileHeader extends ChangeNotifier {
     sizeDataBytes = splitAtExcl(thisData, 8)[0];
     print("our sizeDataBytes is $sizeDataBytes");
     otherData = splitAtExcl(thisData, 8)[1];
-
-    print("subFileData is about to be created");
-
-    int offset = int.parse(subFileOffset, radix: 16);
-    int lenDataBytes = int.parse(sizeDataBytes, radix: 16);
-
-    dat = SubFileData(bytes: data, offset: offset, lenDataBytes: lenDataBytes);
   }
 
   String getStr() {
