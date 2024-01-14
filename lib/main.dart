@@ -281,6 +281,27 @@ class SubFilePage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Texture$i Name"),
+                          ConstrainedBox(
+                              constraints:
+                                  BoxConstraints(minWidth: 10, maxWidth: 10)),
+                          ConstrainedBox(
+                            constraints:
+                                BoxConstraints(minWidth: 30, maxWidth: 100),
+                            child: TextField(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary)),
+                          ),
+                        ],
+                      ),
+                      Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text("mTex$i"),
@@ -497,84 +518,55 @@ class SubFilePage extends StatelessWidget {
           ],
         ),
         ConstrainedBox(
-            constraints: BoxConstraints.tightFor(width: 200, height: 100),
+            constraints: BoxConstraints.tightFor(width: 200, height: 130),
             child: Container(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                          width: 20,
-                          height: 20,
-                          color: Colors.blueGrey.shade600),
-                      Container(
-                          width: 20, height: 20, color: Colors.green.shade300),
-                      Container(
-                          width: 20,
-                          height: 20,
-                          color: Colors.purpleAccent.shade400),
-                      Container(width: 20, height: 20, color: Colors.black87),
-                    ],
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text("Color 1 Primary",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(
-                                color: Theme.of(context).colorScheme.primary,
-                              )),
-                      Text("Color 1 Secondary",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(
-                                color: Theme.of(context).colorScheme.primary,
-                              )),
+                          style: Theme.of(context).textTheme.bodySmall!),
+                      Container(
+                          width: 40,
+                          height: 40,
+                          color: Colors.blueGrey.shade600),
+                      Container(
+                        height: 10,
+                      ),
                       Text("Color 2 Primary",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(
-                                color: Theme.of(context).colorScheme.primary,
-                              )),
-                      Text("Color 2 Secondary",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(
-                                color: Theme.of(context).colorScheme.primary,
-                              )),
+                          style: Theme.of(context).textTheme.bodySmall!),
+                      Container(
+                          width: 40, height: 40, color: Colors.green.shade300),
                     ],
-                  )
+                  ),
+                  Container(
+                    width: 30,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Color 1 Secondary",
+                          style: Theme.of(context).textTheme.bodySmall!),
+                      Container(
+                          width: 40,
+                          height: 40,
+                          color: Color.fromARGB(255, 20, 24, 101)),
+                      Container(
+                        height: 10,
+                      ),
+                      Text("Color 2 Secondary",
+                          style: Theme.of(context).textTheme.bodySmall!),
+                      Container(
+                          width: 40,
+                          height: 40,
+                          color: const Color.fromARGB(255, 7, 49, 9)),
+                    ],
+                  ),
                 ],
               ),
             )),
-        ConstrainedBox(
-          constraints: BoxConstraints.tightFor(height: 70),
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text("Texture 1 Name",
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
-                        )),
-                Text("Texture 2 Name",
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
-                        )),
-                Text("Texture 3 Name",
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
-                        )),
-              ]),
-        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
