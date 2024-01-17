@@ -18,6 +18,8 @@ import 'block_header.dart';
 import 'subfile_table.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tabbed_view/tabbed_view.dart';
+import 'package:flex_color_picker/flex_color_picker.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 // import 'package:get/get.dart';
 
 List<Widget> subFileWidgets = <Widget>[];
@@ -69,6 +71,7 @@ class AppState extends ChangeNotifier {
   late SectionHeader sectionHeader;
   late SubFileTable subFileTable;
   int subFileIdx = 1;
+  Color dialogSelectColor = Colors.blue.shade600;
 
   XTypeGroup typeGroup = const XTypeGroup(
     label: 'images',
@@ -230,12 +233,86 @@ class Tab extends StatelessWidget {
   }
 }
 
-class SubFilePage extends StatelessWidget {
+class SubFilePage extends StatefulWidget {
   const SubFilePage({super.key});
 
   @override
+  State<SubFilePage> createState() => _SubFilePage();
+}
+
+class _SubFilePage extends State<SubFilePage> {
+  Color col1 = Colors.black;
+  Color col2 = Colors.black;
+  Color col1_sec = Colors.black;
+  Color col2_sec = Colors.black;
+  Color dialogPickerColor1 = Colors.blue;
+  Color dialogPickerColor1_sec = Colors.orange;
+  Color dialogPickerColor2 = Colors.red;
+  Color dialogPickerColor2_sec = Colors.black;
+  bool texReverse = false;
+  bool texWrap = false;
+  bool alphaRef0 = false;
+  bool alphaRef1 = false;
+  bool partTransl = false;
+  bool childPartTransl = false;
+  bool childEmTransl = false;
+  @override
   Widget build(context) {
     return subFile(context);
+  }
+
+  void updateDialogPickerColor2(Color color) {
+    setState(() {
+      dialogPickerColor2 = color;
+    });
+  }
+
+  void updateDialogPickerColor1(Color color) {
+    setState(() {
+      dialogPickerColor1 = color;
+    });
+  }
+
+  void updateDialogPickerColor2_sec(Color color) {
+    setState(() {
+      dialogPickerColor2_sec = color;
+    });
+  }
+
+  void updateDialogPickerColor1_sec(Color color) {
+    setState(() {
+      dialogPickerColor1_sec = color;
+    });
+  }
+
+  Future<bool> colorPickerDialog(
+      Color whichColor, Function(Color) onColorChanged) async {
+    return ColorPicker(
+        // Use the dialogPickerColor as start color.
+        color: whichColor,
+        // Update the dialogPickerColor using the callback.
+        onColorChanged: (Color color) async {
+          print("color changed from $whichColor to $color");
+          onColorChanged(color);
+        },
+        enableOpacity: true,
+        enableShadesSelection: false,
+        actionButtons: ColorPickerActionButtons(dialogCancelButtonLabel: "OK"),
+        pickersEnabled: {
+          ColorPickerType.wheel: true,
+          ColorPickerType.primary: false,
+          ColorPickerType.accent: false,
+        }).showPickerDialog(context);
+  }
+
+  void updateCol2(Color newCol) async {
+    final Color colorBeforeDialog = dialogPickerColor2;
+    if (!(await colorPickerDialog(
+        dialogPickerColor2, updateDialogPickerColor2))) {
+      setState(() {
+        dialogPickerColor2 = colorBeforeDialog;
+      });
+    }
   }
 
   Widget textTabs(context) {
@@ -467,8 +544,10 @@ class SubFilePage extends StatelessWidget {
   }
 
   Widget firstColumn(BuildContext context) {
-    bool _texReverse = false;
-    bool _texWrap = false;
+    void noop_col(Color color) {
+      1 + 1;
+    }
+
     // String col1Prim;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -528,17 +607,48 @@ class SubFilePage extends StatelessWidget {
                     children: [
                       Text("Color 1 Primary",
                           style: Theme.of(context).textTheme.bodySmall!),
-                      Container(
-                          width: 40,
-                          height: 40,
-                          color: Colors.blueGrey.shade600),
+                      ColorIndicator(
+                        width: 44,
+                        height: 44,
+                        borderRadius: 4,
+                        color: dialogPickerColor1,
+                        onSelectFocus: false,
+                        onSelect: () async {
+                          // Store current color before we open the dialog.
+                          final Color colorBeforeDialog = dialogPickerColor1;
+                          // Wait for the picker to close, if dialog was dismissed,
+                          // then restore the color we had before it was opened.
+                          if (!(await colorPickerDialog(
+                              dialogPickerColor1, updateDialogPickerColor1))) {
+                            setState(() {
+                              dialogPickerColor1 = colorBeforeDialog;
+                            });
+                          }
+                        },
+                      ),
                       Container(
                         height: 10,
                       ),
                       Text("Color 2 Primary",
                           style: Theme.of(context).textTheme.bodySmall!),
-                      Container(
-                          width: 40, height: 40, color: Colors.green.shade300),
+                      ColorIndicator(
+                          width: 44,
+                          height: 44,
+                          borderRadius: 4,
+                          color: dialogPickerColor2,
+                          onSelectFocus: false,
+                          onSelect: () async {
+                            // Store current color before we open the dialog.
+                            final Color colorBeforeDialog = dialogPickerColor2;
+                            // Wait for the picker to close, if dialog was dismissed,
+                            // then restore the color we had before it was opened.
+                            if (!(await colorPickerDialog(dialogPickerColor2,
+                                updateDialogPickerColor2))) {
+                              setState(() {
+                                dialogPickerColor2 = colorBeforeDialog;
+                              });
+                            }
+                          }),
                     ],
                   ),
                   Container(
@@ -549,19 +659,51 @@ class SubFilePage extends StatelessWidget {
                     children: [
                       Text("Color 1 Secondary",
                           style: Theme.of(context).textTheme.bodySmall!),
-                      Container(
-                          width: 40,
-                          height: 40,
-                          color: Color.fromARGB(255, 20, 24, 101)),
+                      ColorIndicator(
+                        width: 44,
+                        height: 44,
+                        borderRadius: 4,
+                        color: dialogPickerColor1_sec,
+                        onSelectFocus: false,
+                        onSelect: () async {
+                          // Store current color before we open the dialog.
+                          final Color colorBeforeDialog =
+                              dialogPickerColor1_sec;
+                          // Wait for the picker to close, if dialog was dismissed,
+                          // then restore the color we had before it was opened.
+                          if (!(await colorPickerDialog(dialogPickerColor1_sec,
+                              updateDialogPickerColor1_sec))) {
+                            setState(() {
+                              dialogPickerColor1_sec = colorBeforeDialog;
+                            });
+                          }
+                        },
+                      ),
                       Container(
                         height: 10,
                       ),
                       Text("Color 2 Secondary",
                           style: Theme.of(context).textTheme.bodySmall!),
-                      Container(
-                          width: 40,
-                          height: 40,
-                          color: const Color.fromARGB(255, 7, 49, 9)),
+                      ColorIndicator(
+                        width: 44,
+                        height: 44,
+                        borderRadius: 4,
+                        color: dialogPickerColor2_sec,
+                        onSelectFocus: false,
+                        onSelect: () async {
+                          // Store current color before we open the dialog.
+                          final Color colorBeforeDialog =
+                              dialogPickerColor2_sec;
+                          // Wait for the picker to close, if dialog was dismissed,
+                          // then restore the color we had before it was opened.
+                          if (!(await colorPickerDialog(dialogPickerColor2_sec,
+                              updateDialogPickerColor2_sec))) {
+                            setState(() {
+                              dialogPickerColor2_sec = colorBeforeDialog;
+                            });
+                          }
+                        },
+                      ),
                     ],
                   ),
                 ],
@@ -572,16 +714,20 @@ class SubFilePage extends StatelessWidget {
           children: [
             Text("texWrap?"),
             Checkbox(
-              value: _texWrap,
+              value: texWrap,
               onChanged: (bool? newValue) {
-                //AppState().setTexWrap(newValue);
+                setState(() {
+                  texWrap = newValue!;
+                });
               },
             ),
             Text("texReverse?"),
             Checkbox(
-                value: _texReverse,
+                value: texReverse,
                 onChanged: (bool? newValue) {
-                  //AppState().setTexReverse(newValue);
+                  setState(() {
+                    texReverse = newValue!;
+                  });
                 }),
           ],
         ),
@@ -591,8 +737,6 @@ class SubFilePage extends StatelessWidget {
   }
 
   Widget alphaRefs(context) {
-    bool _alphaRef0 = false;
-    bool _alphaRef1 = false;
     return ConstrainedBox(
         constraints: BoxConstraints.tightFor(height: 100),
         child: Column(
@@ -604,28 +748,32 @@ class SubFilePage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("AlphaComparison 0",
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: Theme.of(context).colorScheme.primary)),
+                    Text("AlphaComparison 0"),
                     Container(width: 10),
                     Checkbox(
-                        value: _alphaRef0,
+                        value: alphaRef0,
                         onChanged: (bool? newValue) {
-                          //AppState().setAlphaRef0(newValue);
+                          setState(
+                            () {
+                              alphaRef0 = newValue!;
+                            },
+                          );
                         }),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("AlphaComparison 1",
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: Theme.of(context).colorScheme.primary)),
+                    Text("AlphaComparison 1"),
                     Container(width: 10),
                     Checkbox(
-                        value: _alphaRef1,
+                        value: alphaRef1,
                         onChanged: (bool? newValue) {
-                          //AppState().setAlphaRef1(newValue);
+                          setState(
+                            () {
+                              alphaRef1 = newValue!;
+                            },
+                          );
                         }),
                   ],
                 ),
@@ -644,31 +792,22 @@ class SubFilePage extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              TextButton(
-                  onPressed: () => noop(), child: Text("Rot Offset Rand 1")),
+              Text("Rot Offset Rand 1"),
               Container(width: 10),
-              TextButton(
-                  onPressed: () => noop(), child: Text("Input Text here"))
+              Expanded(child: TextField()),
+              Text("Rot Offset Rand 2"),
+              Container(width: 10),
+              Expanded(child: TextField()),
             ],
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextButton(
-                  onPressed: () => noop(), child: Text("Rot Offset Rand 2")),
+              Text("Rot Offset Rand 3"),
               Container(width: 10),
-              TextButton(
-                  onPressed: () => noop(), child: Text("Input Text here"))
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              TextButton(
-                  onPressed: () => noop(), child: Text("Rot Offset Rand 3")),
-              Container(width: 10),
-              TextButton(
-                  onPressed: () => noop(), child: Text("Input Text here"))
+              ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: 70, minWidth: 20),
+                  child: TextField()),
             ],
           ),
         ],
@@ -710,38 +849,94 @@ class SubFilePage extends StatelessWidget {
           ],
         ),
         Text("Emitter Details", style: Theme.of(context).textTheme.bodyLarge),
-        Column(
-          children: [
-            TextButton(onPressed: () => noop(), child: Text("Shape")),
-            SizedBox(
-              width: 10,
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    TextButton(onPressed: () => noop(), child: Text("Point")),
-                    TextButton(onPressed: () => noop(), child: Text("Disc")),
-                    TextButton(onPressed: () => noop(), child: Text("Line")),
-                    TextButton(onPressed: () => noop(), child: Text("Cube")),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    TextButton(
-                        onPressed: () => noop(), child: Text("Cylinder")),
-                    TextButton(onPressed: () => noop(), child: Text("Sphere")),
-                    TextButton(onPressed: () => noop(), child: Text("Torus")),
-                  ],
-                ),
-              ],
-            )
+        ToggleSwitch(
+          minWidth: 60.0,
+          minHeight: 60.0,
+          fontSize: 14.0,
+          initialLabelIndex: 1,
+          activeBgColor: [Color.fromARGB(255, 28, 148, 157)],
+          activeFgColor: Colors.white,
+          inactiveBgColor: Colors.grey,
+          inactiveFgColor: Colors.grey[900],
+          totalSwitches: 7,
+          labels: [
+            'Disc',
+            'Line',
+            'Cube',
+            'Cylinder',
+            'Sphere',
+            'Point',
+            'Torus'
           ],
+          onToggle: (index) {
+            print('switched to: $index');
+          },
         ),
-        TextButton(onPressed: () => noop(), child: Text("Dims")),
+        Row(children: [Text("Dims"), Expanded(child: TextField())]),
+        Row(children: [Text("Inherit Translation")]),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+          Text("Child Particle"),
+          Checkbox(
+              value: childPartTransl,
+              onChanged: (bool? newValue) {
+                setState(() {
+                  childPartTransl = newValue!;
+                });
+              }),
+          Text("Particle"),
+          Checkbox(
+              value: partTransl,
+              onChanged: (bool? newValue) {
+                setState(() {
+                  partTransl = newValue!;
+                });
+              }),
+          Text("Child Emitter"),
+          Checkbox(
+              value: childEmTransl,
+              onChanged: (bool? newValue) {
+                setState(() {
+                  childEmTransl = newValue!;
+                });
+              })
+        ]),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text("Emitter Life"),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
+                child: TextField()),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            Text("Emit Start"),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
+                child: TextField()),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            Text("Emit End"),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
+                child: TextField()),
+          ],
+        )
       ],
     );
   }

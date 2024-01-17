@@ -22,6 +22,7 @@ dependencies:
   multi_split_view: '2.4.0'
   flutter_animate: '4.4.0'
   toggle_switch: '2.1.0'
+  flex_color_picker: '3.3.0'
 
 dev_dependencies:
   flutter_test:
