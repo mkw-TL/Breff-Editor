@@ -164,20 +164,55 @@ void noop() {
   1 + 1;
 }
 
+Widget customText(String str, context) {
+  return Expanded(
+    child: TextField(
+        style: Theme.of(context)
+            .textTheme
+            .bodyMedium!
+            .copyWith(color: Theme.of(context).colorScheme.primary),
+        decoration: InputDecoration(
+            border: OutlineInputBorder(),
+            hintText: str,
+            filled: true,
+            isDense: true,
+            fillColor: Colors.grey[400])),
+  );
+}
+
 Widget topMenu(context) {
   return SizedBox(
       child: Container(
     color: Colors.blue.shade200,
     child: Row(
-      children: <Widget>[
-        TextButton(
-            onPressed: () => AppState().saveAs(context),
-            child: const Text("Save")),
-        TextButton(
-            onPressed: () => AppState().saveFile(),
-            child: const Text("Save as")),
-        TextButton(
-            onPressed: () => AppState().pickFile(), child: const Text("Open")),
+      children: [
+        SizedBox(
+          width: 200,
+          child: Row(
+            children: <Widget>[
+              TextButton(
+                  onPressed: () => AppState().saveAs(context),
+                  child: const Text("Save")),
+              TextButton(
+                  onPressed: () => AppState().saveFile(),
+                  child: const Text("Save as")),
+              TextButton(
+                  onPressed: () => AppState().pickFile(),
+                  child: const Text("Open")),
+            ],
+          ),
+        ),
+        Expanded(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Text("TL's BREFF Editor")],
+          ),
+        ),
+        Row(children: [
+          TextButton(onPressed: noop, child: Text("                ")),
+          TextButton(onPressed: noop, child: Text("                ")),
+          TextButton(onPressed: noop, child: Text("                ")),
+        ])
       ],
     ),
   ));
@@ -345,7 +380,7 @@ class _SubFilePage extends State<SubFilePage> {
           BoxDecoration(color: Colors.teal[200], borderRadius: borderRadius);
 
     return (ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: 200),
+      constraints: BoxConstraints(maxHeight: 250),
       child: TabbedViewTheme(
         data: themeData,
         child: TabbedView(
@@ -385,17 +420,7 @@ class _SubFilePage extends State<SubFilePage> {
                             ConstrainedBox(
                                 constraints:
                                     BoxConstraints(minWidth: 10, maxWidth: 10)),
-                            ConstrainedBox(
-                              constraints: BoxConstraints(maxWidth: 20),
-                              child: TextField(
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary)),
-                            ),
+                            customText("?", context),
                             ConstrainedBox(
                                 constraints:
                                     BoxConstraints(minWidth: 10, maxWidth: 10)),
@@ -403,92 +428,37 @@ class _SubFilePage extends State<SubFilePage> {
                             ConstrainedBox(
                                 constraints:
                                     BoxConstraints(minWidth: 10, maxWidth: 10)),
-                            ConstrainedBox(
-                              constraints: BoxConstraints(maxWidth: 20),
-                              child: TextField(
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary)),
-                            ),
+                            customText("X", context),
                             ConstrainedBox(
                                 constraints:
                                     BoxConstraints(minWidth: 10, maxWidth: 10)),
-                            ConstrainedBox(
-                              constraints: BoxConstraints(maxWidth: 20),
-                              child: TextField(
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary)),
-                            ),
+                            customText("Y", context),
                             ConstrainedBox(
                                 constraints:
                                     BoxConstraints(minWidth: 10, maxWidth: 10)),
-                            ConstrainedBox(
-                              constraints: BoxConstraints(maxWidth: 20),
-                              child: TextField(
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary)),
-                            ),
+                            customText("Z", context),
                           ]),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("mTranslate$i"),
+                          ConstrainedBox(
+                              constraints:
+                                  BoxConstraints(minWidth: 10, maxWidth: 10)),
+                          customText("X", context),
+                          ConstrainedBox(
+                              constraints:
+                                  BoxConstraints(minWidth: 10, maxWidth: 10)),
+                          customText("Y", context),
+                          ConstrainedBox(
+                              constraints:
+                                  BoxConstraints(minWidth: 10, maxWidth: 10)),
+                          customText("Z", context)
+                        ],
+                      ),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text("mTranslate$i"),
-                            ConstrainedBox(
-                                constraints:
-                                    BoxConstraints(minWidth: 10, maxWidth: 10)),
-                            ConstrainedBox(
-                              constraints: BoxConstraints(maxWidth: 20),
-                              child: TextField(
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary)),
-                            ),
-                            ConstrainedBox(
-                                constraints:
-                                    BoxConstraints(minWidth: 10, maxWidth: 10)),
-                            ConstrainedBox(
-                              constraints: BoxConstraints(maxWidth: 20),
-                              child: TextField(
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary)),
-                            ),
-                            ConstrainedBox(
-                                constraints:
-                                    BoxConstraints(minWidth: 10, maxWidth: 10)),
-                            ConstrainedBox(
-                              constraints: BoxConstraints(maxWidth: 20),
-                              child: TextField(
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary)),
-                            ),
                             ConstrainedBox(
                                 constraints:
                                     BoxConstraints(minWidth: 10, maxWidth: 10)),
@@ -496,45 +466,15 @@ class _SubFilePage extends State<SubFilePage> {
                             ConstrainedBox(
                                 constraints:
                                     BoxConstraints(minWidth: 10, maxWidth: 10)),
-                            ConstrainedBox(
-                              constraints: BoxConstraints(maxWidth: 20),
-                              child: TextField(
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary)),
-                            ),
+                            customText("X deg", context),
                             ConstrainedBox(
                                 constraints:
                                     BoxConstraints(minWidth: 10, maxWidth: 10)),
-                            ConstrainedBox(
-                              constraints: BoxConstraints(maxWidth: 20),
-                              child: TextField(
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary)),
-                            ),
+                            customText("Y deg", context),
                             ConstrainedBox(
                                 constraints:
                                     BoxConstraints(minWidth: 10, maxWidth: 10)),
-                            ConstrainedBox(
-                              constraints: BoxConstraints(maxWidth: 20),
-                              child: TextField(
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary)),
-                            ),
+                            customText("Z deg", context),
                           ]),
                     ]),
               );
@@ -558,40 +498,19 @@ class _SubFilePage extends State<SubFilePage> {
             Text("Size"),
             ConstrainedBox(
                 constraints: BoxConstraints(minWidth: 10, maxWidth: 10)),
-            ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 50, minWidth: 20),
-              child: TextField(
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(color: Theme.of(context).colorScheme.primary)),
-            ),
+            customText("Float", context),
             ConstrainedBox(
                 constraints: BoxConstraints(minWidth: 10, maxWidth: 10)),
             Text("Scale"),
             ConstrainedBox(
                 constraints: BoxConstraints(minWidth: 10, maxWidth: 10)),
-            ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 50, minWidth: 20),
-              child: TextField(
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(color: Theme.of(context).colorScheme.primary)),
-            ),
+            customText("Float", context),
             ConstrainedBox(
                 constraints: BoxConstraints(minWidth: 10, maxWidth: 10)),
             Text("Rotation"),
             ConstrainedBox(
                 constraints: BoxConstraints(minWidth: 10, maxWidth: 10)),
-            ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 50, minWidth: 20),
-              child: TextField(
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(color: Theme.of(context).colorScheme.primary)),
-            ),
+            customText("Degrees?", context),
             ConstrainedBox(
                 constraints: BoxConstraints(minWidth: 10, maxWidth: 10)),
           ],
@@ -738,45 +657,40 @@ class _SubFilePage extends State<SubFilePage> {
 
   Widget alphaRefs(context) {
     return ConstrainedBox(
-        constraints: BoxConstraints.tightFor(height: 100),
+        constraints: BoxConstraints.tightFor(height: 70),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("AlphaComparison 0"),
-                    Container(width: 10),
-                    Checkbox(
-                        value: alphaRef0,
-                        onChanged: (bool? newValue) {
-                          setState(
-                            () {
-                              alphaRef0 = newValue!;
-                            },
-                          );
-                        }),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("AlphaComparison 1"),
-                    Container(width: 10),
-                    Checkbox(
-                        value: alphaRef1,
-                        onChanged: (bool? newValue) {
-                          setState(
-                            () {
-                              alphaRef1 = newValue!;
-                            },
-                          );
-                        }),
-                  ],
-                ),
+                Text("AlphaComparison 0"),
+                Container(width: 10),
+                Checkbox(
+                    value: alphaRef0,
+                    onChanged: (bool? newValue) {
+                      setState(
+                        () {
+                          alphaRef0 = newValue!;
+                        },
+                      );
+                    }),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("AlphaComparison 1"),
+                Container(width: 10),
+                Checkbox(
+                    value: alphaRef1,
+                    onChanged: (bool? newValue) {
+                      setState(
+                        () {
+                          alphaRef1 = newValue!;
+                        },
+                      );
+                    }),
               ],
             ),
           ],
@@ -785,29 +699,20 @@ class _SubFilePage extends State<SubFilePage> {
 
   Widget randOffs(context) {
     return ConstrainedBox(
-      constraints: BoxConstraints.tightFor(height: 100),
+      constraints: BoxConstraints.tightFor(height: 50),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text("Rot Offset Rand 1"),
+              Text("Rot Offset Rand"),
               Container(width: 10),
-              Expanded(child: TextField()),
-              Text("Rot Offset Rand 2"),
+              customText("X?", context),
               Container(width: 10),
-              Expanded(child: TextField()),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("Rot Offset Rand 3"),
+              customText("Y?", context),
               Container(width: 10),
-              ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: 70, minWidth: 20),
-                  child: TextField()),
+              customText("Z?", context),
             ],
           ),
         ],
@@ -826,117 +731,192 @@ class _SubFilePage extends State<SubFilePage> {
           children: [
             Text("Rotate Offset",
                 style: Theme.of(context).textTheme.bodyMedium),
-            Expanded(
-              flex: 1,
-              child: TextField(),
-            ),
             SizedBox(
               width: 10,
               height: 10,
             ),
-            Expanded(
-              flex: 1,
-              child: TextField(),
-            ),
+            customText("X deg", context),
             SizedBox(
               width: 10,
               height: 10,
             ),
-            Expanded(
-              flex: 1,
-              child: TextField(),
+            customText("Y deg", context),
+            SizedBox(
+              width: 10,
+              height: 10,
             ),
+            customText("Z deg", context),
           ],
         ),
-        Text("Emitter Details", style: Theme.of(context).textTheme.bodyLarge),
-        ToggleSwitch(
-          minWidth: 60.0,
-          minHeight: 60.0,
-          fontSize: 14.0,
-          initialLabelIndex: 1,
-          activeBgColor: [Color.fromARGB(255, 28, 148, 157)],
-          activeFgColor: Colors.white,
-          inactiveBgColor: Colors.grey,
-          inactiveFgColor: Colors.grey[900],
-          totalSwitches: 7,
-          labels: [
-            'Disc',
-            'Line',
-            'Cube',
-            'Cylinder',
-            'Sphere',
-            'Point',
-            'Torus'
-          ],
-          onToggle: (index) {
-            print('switched to: $index');
-          },
+        Padding(
+          padding: const EdgeInsets.all(1),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+                color: Colors.teal[200],
+                borderRadius: BorderRadius.circular(10)),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Emitter Details",
+                    style: Theme.of(context).textTheme.bodyLarge),
+                ToggleSwitch(
+                  minWidth: 60.0,
+                  minHeight: 60.0,
+                  fontSize: 14.0,
+                  initialLabelIndex: 1,
+                  activeBgColor: [Color.fromARGB(255, 28, 148, 157)],
+                  activeFgColor: Colors.white,
+                  inactiveBgColor: Colors.grey,
+                  inactiveFgColor: Colors.grey[900],
+                  totalSwitches: 7,
+                  labels: [
+                    'Disc',
+                    'Line',
+                    'Cube',
+                    'Cylinder',
+                    'Sphere',
+                    'Point',
+                    'Torus'
+                  ],
+                  onToggle: (index) {
+                    print('switched to: $index');
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                      children: [Text("Dims"), Expanded(child: TextField())]),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                        color: Colors.grey[400],
+                        borderRadius: BorderRadius.circular(7)),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Text("Inherit Translation",
+                                style: Theme.of(context).textTheme.bodyLarge!),
+                          ],
+                          mainAxisAlignment: MainAxisAlignment.center,
+                        ),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text("Child Particle"),
+                              Checkbox(
+                                  value: childPartTransl,
+                                  onChanged: (bool? newValue) {
+                                    setState(() {
+                                      childPartTransl = newValue!;
+                                    });
+                                  }),
+                              Text("Particle"),
+                              Checkbox(
+                                  value: partTransl,
+                                  onChanged: (bool? newValue) {
+                                    setState(() {
+                                      partTransl = newValue!;
+                                    });
+                                  }),
+                              Text("Child Emitter"),
+                              Checkbox(
+                                  value: childEmTransl,
+                                  onChanged: (bool? newValue) {
+                                    setState(() {
+                                      childEmTransl = newValue!;
+                                    });
+                                  })
+                            ]),
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text("Life"),
+                      Container(
+                        width: 10,
+                        height: 10,
+                      ),
+                      customText("Int", context),
+                      Container(
+                        width: 10,
+                        height: 10,
+                      ),
+                      Text("Start"),
+                      Container(
+                        width: 10,
+                        height: 10,
+                      ),
+                      customText("Int", context),
+                      Container(
+                        width: 10,
+                        height: 10,
+                      ),
+                      Text("End"),
+                      Container(
+                        width: 10,
+                        height: 10,
+                      ),
+                      customText("Int", context),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text("Emitter Interval"),
+                      Container(
+                        width: 10,
+                        height: 10,
+                      ),
+                      customText("?", context),
+                      Container(
+                        width: 10,
+                        height: 10,
+                      ),
+                      Text("Interval Random"),
+                      Container(
+                        width: 10,
+                        height: 10,
+                      ),
+                      customText("?", context),
+                      Container(
+                        width: 10,
+                        height: 10,
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Emit Random"),
+                      Container(
+                        width: 10,
+                        height: 10,
+                      ),
+                      ConstrainedBox(
+                          constraints:
+                              BoxConstraints(maxWidth: 70, minWidth: 40),
+                          child: customText("?", context)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
-        Row(children: [Text("Dims"), Expanded(child: TextField())]),
-        Row(children: [Text("Inherit Translation")]),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          Text("Child Particle"),
-          Checkbox(
-              value: childPartTransl,
-              onChanged: (bool? newValue) {
-                setState(() {
-                  childPartTransl = newValue!;
-                });
-              }),
-          Text("Particle"),
-          Checkbox(
-              value: partTransl,
-              onChanged: (bool? newValue) {
-                setState(() {
-                  partTransl = newValue!;
-                });
-              }),
-          Text("Child Emitter"),
-          Checkbox(
-              value: childEmTransl,
-              onChanged: (bool? newValue) {
-                setState(() {
-                  childEmTransl = newValue!;
-                });
-              })
-        ]),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text("Emitter Life"),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
-                child: TextField()),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            Text("Emit Start"),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
-                child: TextField()),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            Text("Emit End"),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
-                child: TextField()),
-          ],
-        )
       ],
     );
   }
@@ -945,7 +925,221 @@ class _SubFilePage extends State<SubFilePage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        TextButton(onPressed: () => noop(), child: Text("Particle Details")),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text("Emit Diversion"),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
+                child: TextField()),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            Text("Velocity random"),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
+                child: TextField()),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            Text("Momentum Random"),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
+                child: TextField()),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text("Emit Angle"),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
+                child: TextField()),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            Text("Random Seed"),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
+                child: TextField()),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            Text("Emit flags"),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
+                child: TextField()),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text("Power Radiation"),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
+                child: TextField()),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            Text("Power Y-axis value"),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
+                child: TextField()),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            Text("Power Random"),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
+                child: TextField()),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text("Power normal"),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
+                child: TextField()),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            Text("Diffison emitter normal"),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
+                child: TextField()),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            Text("Power Spec"),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
+                child: TextField()),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Diffusion normal"),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
+                child: TextField()),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text("LOD nearest dist"),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
+                child: TextField()),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            Text("LOD farthest dist"),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
+                child: TextField()),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            Text("LOD min emission"),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
+                child: TextField()),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("LOD alpha"),
+            Container(
+              width: 10,
+              height: 10,
+            ),
+            ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
+                child: TextField()),
+          ],
+        ),
         TextButton(
             onPressed: () => noop(), child: Text("Particle type, life, etc")),
         TextButton(onPressed: () => noop(), child: Text("TEV here")),
