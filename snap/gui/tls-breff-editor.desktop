@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=TL's BREFF Editor
+Comment=An Editor for MKWii
+Exec=tls-breff-Editor
+Icon=${SNAP}/meta/gui/tls-breff-editor.png # replace name to your app name
+Terminal=false
+Type=Application
+Categories=Tools; #adjust accordingly your snap category

@@ -20,11 +20,22 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tabbed_view/tabbed_view.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'package:video_player/video_player.dart';
+import 'package:video_player_media_kit/video_player_media_kit.dart';
 // import 'package:get/get.dart';
 
 List<Widget> subFileWidgets = <Widget>[];
 
 void main() {
+  VideoPlayerMediaKit.ensureInitialized(
+    // default: false    -    dependency: media_kit_libs_ios_video
+    macOS:
+        true, // default: false    -    dependency: media_kit_libs_macos_video
+    windows:
+        true, // default: false    -    dependency: media_kit_libs_windows_video
+    linux: true, // default: false    -    dependency: media_kit_libs_linux
+  );
+
   runApp(ChangeNotifierProvider(
     create: (context) => AppState(),
     child: const MyApp(),
@@ -699,7 +710,7 @@ class _SubFilePage extends State<SubFilePage> {
 
   Widget randOffs(context) {
     return ConstrainedBox(
-      constraints: BoxConstraints.tightFor(height: 50),
+      constraints: BoxConstraints.tightFor(height: 100),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -715,6 +726,28 @@ class _SubFilePage extends State<SubFilePage> {
               customText("Z?", context),
             ],
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text("Rotate Offset",
+                  style: Theme.of(context).textTheme.bodyMedium),
+              SizedBox(
+                width: 10,
+                height: 10,
+              ),
+              customText("X deg", context),
+              SizedBox(
+                width: 10,
+                height: 10,
+              ),
+              customText("Y deg", context),
+              SizedBox(
+                width: 10,
+                height: 10,
+              ),
+              customText("Z deg", context),
+            ],
+          ),
         ],
       ),
     );
@@ -724,30 +757,6 @@ class _SubFilePage extends State<SubFilePage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        alphaRefs(context),
-        randOffs(context),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text("Rotate Offset",
-                style: Theme.of(context).textTheme.bodyMedium),
-            SizedBox(
-              width: 10,
-              height: 10,
-            ),
-            customText("X deg", context),
-            SizedBox(
-              width: 10,
-              height: 10,
-            ),
-            customText("Y deg", context),
-            SizedBox(
-              width: 10,
-              height: 10,
-            ),
-            customText("Z deg", context),
-          ],
-        ),
         Padding(
           padding: const EdgeInsets.all(1),
           child: DecoratedBox(
@@ -917,233 +926,272 @@ class _SubFilePage extends State<SubFilePage> {
             ),
           ),
         ),
+        alphaRefs(context),
+        randOffs(context),
       ],
     );
   }
 
   Widget thirdColumn(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text("Emit Diversion"),
-            Container(
-              width: 10,
-              height: 10,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text("Emit Diversion"),
+              Container(
+                width: 10,
+                height: 10,
+              ),
+              customText("?", context),
+              Container(
+                width: 10,
+                height: 10,
+              ),
+              Text("Velocity random"),
+              Container(
+                width: 10,
+                height: 10,
+              ),
+              customText("?", context),
+              Container(
+                width: 10,
+                height: 10,
+              ),
+              Text("Momentum Random"),
+              Container(
+                width: 10,
+                height: 10,
+              ),
+              customText("?", context),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text("Emit Angle"),
+              Container(
+                width: 10,
+                height: 10,
+              ),
+              customText("Deg?", context),
+              Container(
+                width: 10,
+                height: 10,
+              ),
+              Text("Random Seed"),
+              Container(
+                width: 10,
+                height: 10,
+              ),
+              customText("Int", context),
+              Container(
+                width: 10,
+                height: 10,
+              ),
+              Text("Emit flags"),
+              Container(
+                width: 10,
+                height: 10,
+              ),
+              customText("???", context),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(1),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                  color: Colors.teal[200],
+                  borderRadius: BorderRadius.circular(10)),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text("Power Radiation"),
+                        Container(
+                          width: 10,
+                          height: 10,
+                        ),
+                        customText("?", context),
+                        Container(
+                          width: 10,
+                          height: 10,
+                        ),
+                        Text("Power Y-axis value"),
+                        Container(
+                          width: 10,
+                          height: 10,
+                        ),
+                        customText("?", context),
+                        Container(
+                          width: 10,
+                          height: 10,
+                        ),
+                        Text("Power Random"),
+                        Container(
+                          width: 10,
+                          height: 10,
+                        ),
+                        customText("?", context),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text("Power normal"),
+                        Container(
+                          width: 10,
+                          height: 10,
+                        ),
+                        customText("?", context),
+                        Container(
+                          width: 10,
+                          height: 10,
+                        ),
+                        Text("Diffison emitter normal"),
+                        Container(
+                          width: 10,
+                          height: 10,
+                        ),
+                        customText("?", context),
+                        Container(
+                          width: 10,
+                          height: 10,
+                        ),
+                        Text("Power Spec"),
+                        Container(
+                          width: 10,
+                          height: 10,
+                        ),
+                        customText("?", context),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Diffusion normal"),
+                        Container(
+                          width: 10,
+                          height: 10,
+                        ),
+                        ConstrainedBox(
+                          constraints:
+                              BoxConstraints(maxWidth: 70, minWidth: 40),
+                          child: customText("?", context),
+                        ),
+                        Container(
+                          width: 10,
+                          height: 10,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-            ConstrainedBox(
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text("LOD nearest dist"),
+              Container(
+                width: 10,
+                height: 10,
+              ),
+              customText("?", context),
+              Container(
+                width: 10,
+                height: 10,
+              ),
+              Text("LOD farthest dist"),
+              Container(
+                width: 10,
+                height: 10,
+              ),
+              customText("?", context),
+              Container(
+                width: 10,
+                height: 10,
+              ),
+              Text("LOD min emission"),
+              Container(
+                width: 10,
+                height: 10,
+              ),
+              customText("?", context),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("LOD alpha"),
+              Container(
+                width: 10,
+                height: 10,
+              ),
+              ConstrainedBox(
                 constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
-                child: TextField()),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            Text("Velocity random"),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
-                child: TextField()),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            Text("Momentum Random"),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
-                child: TextField()),
-          ],
+                child: customText("?", context),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget thirdColumnTabs(BuildContext context) {
+    List<TabData> tabs = [];
+    tabs.add(TabData(text: "Details", content: thirdColumn(context)));
+    tabs.add(TabData(text: "TEV", content: Text("TEV HERE")));
+
+    TabbedViewThemeData themeData = TabbedViewThemeData();
+    themeData.tabsArea
+      ..border = Border(bottom: BorderSide(color: Colors.teal[500]!, width: 3))
+      ..middleGap = 6;
+
+    Radius radius = Radius.circular(10.0);
+    BorderRadiusGeometry? borderRadius =
+        BorderRadius.only(topLeft: radius, topRight: radius);
+
+    themeData.tab
+      ..padding = EdgeInsets.fromLTRB(10, 4, 10, 4)
+      ..buttonsOffset = 4
+      ..decoration = BoxDecoration(
+          shape: BoxShape.rectangle,
+          color: Colors.teal[200],
+          borderRadius: borderRadius)
+      ..selectedStatus.decoration =
+          BoxDecoration(color: Colors.teal[500], borderRadius: borderRadius)
+      ..highlightedStatus.decoration =
+          BoxDecoration(color: Colors.teal[200], borderRadius: borderRadius);
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: 250),
+      child: TabbedViewTheme(
+        data: themeData,
+        child: TabbedView(
+          controller: TabbedViewController(tabs),
+          contentBuilder: (BuildContext context, int tabIndex) {
+            int i = tabIndex + 1;
+            return Animate(
+                effects: [FadeEffect()], child: tabs[tabIndex].content!);
+          },
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text("Emit Angle"),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
-                child: TextField()),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            Text("Random Seed"),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
-                child: TextField()),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            Text("Emit flags"),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
-                child: TextField()),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text("Power Radiation"),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
-                child: TextField()),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            Text("Power Y-axis value"),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
-                child: TextField()),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            Text("Power Random"),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
-                child: TextField()),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text("Power normal"),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
-                child: TextField()),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            Text("Diffison emitter normal"),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
-                child: TextField()),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            Text("Power Spec"),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
-                child: TextField()),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Diffusion normal"),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
-                child: TextField()),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text("LOD nearest dist"),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
-                child: TextField()),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            Text("LOD farthest dist"),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
-                child: TextField()),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            Text("LOD min emission"),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
-                child: TextField()),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("LOD alpha"),
-            Container(
-              width: 10,
-              height: 10,
-            ),
-            ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
-                child: TextField()),
-          ],
-        ),
-        TextButton(
-            onPressed: () => noop(), child: Text("Particle type, life, etc")),
-        TextButton(onPressed: () => noop(), child: Text("TEV here")),
-      ],
+      ),
     );
   }
 
@@ -1153,7 +1201,11 @@ class _SubFilePage extends State<SubFilePage> {
       data: MultiSplitViewThemeData(
           dividerPainter:
               DividerPainters.grooved1(highlightedColor: Colors.indigo[900]!)),
-      child: MultiSplitView(children: [
+      child: MultiSplitView(initialAreas: [
+        Area(weight: .25),
+        Area(weight: .4),
+        Area(weight: .35)
+      ], children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: firstColumn(context),
@@ -1164,7 +1216,7 @@ class _SubFilePage extends State<SubFilePage> {
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: thirdColumn(context),
+          child: thirdColumnTabs(context),
         ),
       ]),
     ));

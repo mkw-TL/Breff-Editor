@@ -1,0 +1,28 @@
+name: tls-breff-editor
+version: 0.1.0
+summary: TL's BREFF Editor
+description: Edits BREFF files
+
+confinement: strict
+base: core22
+grade: stable
+
+slots:
+  dbus-tls-breff-editor: # adjust accordingly to your app name
+    interface: dbus
+    bus: session
+    name: org.bar.tls-breff-editor # adjust accordingly to your app name and
+
+apps:
+  tls-breff-editor:
+    command: tls_breff_editor
+    extensions: [gnome] # gnome includes the libraries required by flutter
+    plugs:
+    - network
+    slots:
+      - dbus-tls-breff-editor
+parts:
+  tls-breff-editor:
+    source: .
+    plugin: flutter
+    flutter-target: lib/main.dart # The main entry-point file of the application
