@@ -20,22 +20,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tabbed_view/tabbed_view.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:toggle_switch/toggle_switch.dart';
-import 'package:video_player/video_player.dart';
-import 'package:video_player_media_kit/video_player_media_kit.dart';
 // import 'package:get/get.dart';
 
 List<Widget> subFileWidgets = <Widget>[];
 
 void main() {
-  VideoPlayerMediaKit.ensureInitialized(
-    // default: false    -    dependency: media_kit_libs_ios_video
-    macOS:
-        true, // default: false    -    dependency: media_kit_libs_macos_video
-    windows:
-        true, // default: false    -    dependency: media_kit_libs_windows_video
-    linux: true, // default: false    -    dependency: media_kit_libs_linux
-  );
-
   runApp(ChangeNotifierProvider(
     create: (context) => AppState(),
     child: const MyApp(),

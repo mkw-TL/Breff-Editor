@@ -22,7 +22,7 @@ apps:
     slots:
       - dbus-tls-breff-editor
 parts:
-  tls-breff-editor:
+  tls-breff-editor-PART:
     source: .
     plugin: flutter
     flutter-target: lib/main.dart # The main entry-point file of the application
