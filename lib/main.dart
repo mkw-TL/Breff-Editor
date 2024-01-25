@@ -165,7 +165,7 @@ void noop() {
 }
 
 Widget customText(String str, context) {
-  return Container(
+  return Expanded(
     child: TextField(
         style: Theme.of(context)
             .textTheme
