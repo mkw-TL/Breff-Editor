@@ -164,8 +164,9 @@ void noop() {
   1 + 1;
 }
 
-Widget customText(String str, context) {
-  return Expanded(
+Widget customText(String str, BuildContext context) {
+  return Container(
+    constraints: BoxConstraints(maxWidth: 100),
     child: TextField(
         style: Theme.of(context)
             .textTheme
@@ -250,7 +251,7 @@ class Tab extends StatelessWidget {
       ..highlightedStatus.decoration =
           BoxDecoration(color: Colors.teal[200], borderRadius: borderRadius);
 
-    return (ConstrainedBox(
+    return (Container(
       constraints: BoxConstraints(maxHeight: 50),
       child: TabbedViewTheme(
         data: themeData,
@@ -399,7 +400,7 @@ class _SubFilePage extends State<SubFilePage> {
                           ConstrainedBox(
                               constraints:
                                   BoxConstraints(minWidth: 10, maxWidth: 10)),
-                          ConstrainedBox(
+                          Container(
                             constraints:
                                 BoxConstraints(minWidth: 30, maxWidth: 100),
                             child: TextField(
@@ -420,7 +421,7 @@ class _SubFilePage extends State<SubFilePage> {
                             ConstrainedBox(
                                 constraints:
                                     BoxConstraints(minWidth: 10, maxWidth: 10)),
-                            customText("?", context),
+                            Expanded(child: customText("?", context)),
                             ConstrainedBox(
                                 constraints:
                                     BoxConstraints(minWidth: 10, maxWidth: 10)),
@@ -428,15 +429,15 @@ class _SubFilePage extends State<SubFilePage> {
                             ConstrainedBox(
                                 constraints:
                                     BoxConstraints(minWidth: 10, maxWidth: 10)),
-                            customText("X", context),
+                            Expanded(child: customText("X", context)),
                             ConstrainedBox(
                                 constraints:
                                     BoxConstraints(minWidth: 10, maxWidth: 10)),
-                            customText("Y", context),
+                            Expanded(child: customText("Y", context)),
                             ConstrainedBox(
                                 constraints:
                                     BoxConstraints(minWidth: 10, maxWidth: 10)),
-                            customText("Z", context),
+                            Expanded(child: customText("Z", context)),
                           ]),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -445,15 +446,15 @@ class _SubFilePage extends State<SubFilePage> {
                           ConstrainedBox(
                               constraints:
                                   BoxConstraints(minWidth: 10, maxWidth: 10)),
-                          customText("X", context),
+                          Expanded(child: customText("X", context)),
                           ConstrainedBox(
                               constraints:
                                   BoxConstraints(minWidth: 10, maxWidth: 10)),
-                          customText("Y", context),
+                          Expanded(child: customText("Y", context)),
                           ConstrainedBox(
                               constraints:
                                   BoxConstraints(minWidth: 10, maxWidth: 10)),
-                          customText("Z", context)
+                          Expanded(child: customText("Z", context))
                         ],
                       ),
                       Row(
@@ -466,15 +467,15 @@ class _SubFilePage extends State<SubFilePage> {
                             ConstrainedBox(
                                 constraints:
                                     BoxConstraints(minWidth: 10, maxWidth: 10)),
-                            customText("X deg", context),
+                            Expanded(child: customText("X deg", context)),
                             ConstrainedBox(
                                 constraints:
                                     BoxConstraints(minWidth: 10, maxWidth: 10)),
-                            customText("Y deg", context),
+                            Expanded(child: customText("Y deg", context)),
                             ConstrainedBox(
                                 constraints:
                                     BoxConstraints(minWidth: 10, maxWidth: 10)),
-                            customText("Z deg", context),
+                            Expanded(child: customText("Z deg", context)),
                           ]),
                     ]),
               );
@@ -498,25 +499,25 @@ class _SubFilePage extends State<SubFilePage> {
             Text("Size"),
             ConstrainedBox(
                 constraints: BoxConstraints(minWidth: 10, maxWidth: 10)),
-            customText("Float", context),
+            Expanded(child: customText("Float", context)),
             ConstrainedBox(
                 constraints: BoxConstraints(minWidth: 10, maxWidth: 10)),
             Text("Scale"),
             ConstrainedBox(
                 constraints: BoxConstraints(minWidth: 10, maxWidth: 10)),
-            customText("Float", context),
+            Expanded(child: customText("Float", context)),
             ConstrainedBox(
                 constraints: BoxConstraints(minWidth: 10, maxWidth: 10)),
             Text("Rotation"),
             ConstrainedBox(
                 constraints: BoxConstraints(minWidth: 10, maxWidth: 10)),
-            customText("Degrees?", context),
+            Expanded(child: customText("Degrees?", context)),
             ConstrainedBox(
                 constraints: BoxConstraints(minWidth: 10, maxWidth: 10)),
           ],
         ),
         Container(
-          constraints: BoxConstraints.tightFor(width: 200, height: 130),
+          constraints: BoxConstraints(maxWidth: 200, maxHeight: 130),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -701,15 +702,15 @@ class _SubFilePage extends State<SubFilePage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text("Rot Offset Rand"),
               Container(width: 10),
-              customText("X?", context),
+              Expanded(child: customText("X?", context)),
               Container(width: 10),
-              customText("Y?", context),
+              Expanded(child: customText("Y?", context)),
               Container(width: 10),
-              customText("Z?", context),
+              Expanded(child: customText("Z?", context)),
             ],
           ),
           Row(
@@ -721,17 +722,17 @@ class _SubFilePage extends State<SubFilePage> {
                 width: 10,
                 height: 10,
               ),
-              customText("X deg", context),
+              Expanded(child: customText("X deg", context)),
               SizedBox(
                 width: 10,
                 height: 10,
               ),
-              customText("Y deg", context),
+              Expanded(child: customText("Y deg", context)),
               SizedBox(
                 width: 10,
                 height: 10,
               ),
-              customText("Z deg", context),
+              Expanded(child: customText("Z deg", context)),
             ],
           ),
         ],
@@ -839,7 +840,7 @@ class _SubFilePage extends State<SubFilePage> {
                         width: 10,
                         height: 10,
                       ),
-                      customText("Int", context),
+                      Expanded(child: customText("Int", context)),
                       Container(
                         width: 10,
                         height: 10,
@@ -849,7 +850,7 @@ class _SubFilePage extends State<SubFilePage> {
                         width: 10,
                         height: 10,
                       ),
-                      customText("Int", context),
+                      Expanded(child: customText("Int", context)),
                       Container(
                         width: 10,
                         height: 10,
@@ -859,7 +860,7 @@ class _SubFilePage extends State<SubFilePage> {
                         width: 10,
                         height: 10,
                       ),
-                      customText("Int", context),
+                      Expanded(child: customText("Int", context)),
                     ],
                   ),
                 ),
@@ -873,7 +874,7 @@ class _SubFilePage extends State<SubFilePage> {
                         width: 10,
                         height: 10,
                       ),
-                      customText("?", context),
+                      Expanded(child: customText("?", context)),
                       Container(
                         width: 10,
                         height: 10,
@@ -883,7 +884,7 @@ class _SubFilePage extends State<SubFilePage> {
                         width: 10,
                         height: 10,
                       ),
-                      customText("?", context),
+                      Expanded(child: customText("?", context)),
                       Container(
                         width: 10,
                         height: 10,
@@ -901,7 +902,7 @@ class _SubFilePage extends State<SubFilePage> {
                         width: 10,
                         height: 10,
                       ),
-                      ConstrainedBox(
+                      Container(
                           constraints:
                               BoxConstraints(maxWidth: 70, minWidth: 40),
                           child: customText("?", context)),
@@ -932,7 +933,7 @@ class _SubFilePage extends State<SubFilePage> {
                 width: 10,
                 height: 10,
               ),
-              customText("?", context),
+              Expanded(child: customText("?", context)),
               Container(
                 width: 10,
                 height: 10,
@@ -942,7 +943,7 @@ class _SubFilePage extends State<SubFilePage> {
                 width: 10,
                 height: 10,
               ),
-              customText("?", context),
+              Expanded(child: customText("?", context)),
               Container(
                 width: 10,
                 height: 10,
@@ -952,7 +953,7 @@ class _SubFilePage extends State<SubFilePage> {
                 width: 10,
                 height: 10,
               ),
-              customText("?", context),
+              Expanded(child: customText("?", context)),
             ],
           ),
           Row(
@@ -963,7 +964,7 @@ class _SubFilePage extends State<SubFilePage> {
                 width: 10,
                 height: 10,
               ),
-              customText("Deg?", context),
+              Expanded(child: customText("Deg?", context)),
               Container(
                 width: 10,
                 height: 10,
@@ -973,7 +974,7 @@ class _SubFilePage extends State<SubFilePage> {
                 width: 10,
                 height: 10,
               ),
-              customText("Int", context),
+              Expanded(child: customText("Int", context)),
               Container(
                 width: 10,
                 height: 10,
@@ -983,7 +984,7 @@ class _SubFilePage extends State<SubFilePage> {
                 width: 10,
                 height: 10,
               ),
-              customText("???", context),
+              Expanded(child: customText("???", context)),
             ],
           ),
           Padding(
@@ -1005,7 +1006,7 @@ class _SubFilePage extends State<SubFilePage> {
                           width: 10,
                           height: 10,
                         ),
-                        customText("?", context),
+                        Expanded(child: customText("?", context)),
                         Container(
                           width: 10,
                           height: 10,
@@ -1015,7 +1016,7 @@ class _SubFilePage extends State<SubFilePage> {
                           width: 10,
                           height: 10,
                         ),
-                        customText("?", context),
+                        Expanded(child: customText("?", context)),
                         Container(
                           width: 10,
                           height: 10,
@@ -1025,7 +1026,7 @@ class _SubFilePage extends State<SubFilePage> {
                           width: 10,
                           height: 10,
                         ),
-                        customText("?", context),
+                        Expanded(child: customText("?", context)),
                       ],
                     ),
                   ),
@@ -1039,7 +1040,7 @@ class _SubFilePage extends State<SubFilePage> {
                           width: 10,
                           height: 10,
                         ),
-                        customText("?", context),
+                        Expanded(child: customText("?", context)),
                         Container(
                           width: 10,
                           height: 10,
@@ -1049,7 +1050,7 @@ class _SubFilePage extends State<SubFilePage> {
                           width: 10,
                           height: 10,
                         ),
-                        customText("?", context),
+                        Expanded(child: customText("?", context)),
                         Container(
                           width: 10,
                           height: 10,
@@ -1059,7 +1060,7 @@ class _SubFilePage extends State<SubFilePage> {
                           width: 10,
                           height: 10,
                         ),
-                        customText("?", context),
+                        Expanded(child: customText("?", context)),
                       ],
                     ),
                   ),
@@ -1073,11 +1074,7 @@ class _SubFilePage extends State<SubFilePage> {
                           width: 10,
                           height: 10,
                         ),
-                        ConstrainedBox(
-                          constraints:
-                              BoxConstraints(maxWidth: 70, minWidth: 40),
-                          child: customText("?", context),
-                        ),
+                        customText("?", context),
                         Container(
                           width: 10,
                           height: 10,
@@ -1097,7 +1094,7 @@ class _SubFilePage extends State<SubFilePage> {
                 width: 10,
                 height: 10,
               ),
-              customText("?", context),
+              Expanded(child: customText("?", context)),
               Container(
                 width: 10,
                 height: 10,
@@ -1107,7 +1104,7 @@ class _SubFilePage extends State<SubFilePage> {
                 width: 10,
                 height: 10,
               ),
-              customText("?", context),
+              Expanded(child: customText("?", context)),
               Container(
                 width: 10,
                 height: 10,
@@ -1117,7 +1114,7 @@ class _SubFilePage extends State<SubFilePage> {
                 width: 10,
                 height: 10,
               ),
-              customText("?", context),
+              Expanded(child: customText("?", context)),
             ],
           ),
           Row(
@@ -1128,10 +1125,7 @@ class _SubFilePage extends State<SubFilePage> {
                 width: 10,
                 height: 10,
               ),
-              ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 70, minWidth: 40),
-                child: customText("?", context),
-              ),
+              customText("?", context),
             ],
           ),
         ],
@@ -1202,7 +1196,7 @@ class _SubFilePage extends State<SubFilePage> {
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: thirdColumnTabs(context),
+          child: thirdColumn(context),
         ),
       ]),
     ));
