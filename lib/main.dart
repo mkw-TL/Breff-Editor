@@ -379,7 +379,7 @@ class _SubFilePage extends State<SubFilePage> {
       ..highlightedStatus.decoration =
           BoxDecoration(color: Colors.teal[200], borderRadius: borderRadius);
 
-    return (ConstrainedBox(
+    return (Container(
       constraints: BoxConstraints(maxHeight: 250),
       child: TabbedViewTheme(
         data: themeData,
@@ -515,119 +515,116 @@ class _SubFilePage extends State<SubFilePage> {
                 constraints: BoxConstraints(minWidth: 10, maxWidth: 10)),
           ],
         ),
-        ConstrainedBox(
-            constraints: BoxConstraints.tightFor(width: 200, height: 130),
-            child: Container(
-              child: Row(
+        Container(
+          constraints: BoxConstraints.tightFor(width: 200, height: 130),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Color 1 Primary",
-                          style: Theme.of(context).textTheme.bodySmall!),
-                      ColorIndicator(
-                        width: 44,
-                        height: 44,
-                        borderRadius: 4,
-                        color: dialogPickerColor1,
-                        onSelectFocus: false,
-                        onSelect: () async {
-                          // Store current color before we open the dialog.
-                          final Color colorBeforeDialog = dialogPickerColor1;
-                          // Wait for the picker to close, if dialog was dismissed,
-                          // then restore the color we had before it was opened.
-                          if (!(await colorPickerDialog(
-                              dialogPickerColor1, updateDialogPickerColor1))) {
-                            setState(() {
-                              dialogPickerColor1 = colorBeforeDialog;
-                            });
-                          }
-                        },
-                      ),
-                      Container(
-                        height: 10,
-                      ),
-                      Text("Color 2 Primary",
-                          style: Theme.of(context).textTheme.bodySmall!),
-                      ColorIndicator(
-                          width: 44,
-                          height: 44,
-                          borderRadius: 4,
-                          color: dialogPickerColor2,
-                          onSelectFocus: false,
-                          onSelect: () async {
-                            // Store current color before we open the dialog.
-                            final Color colorBeforeDialog = dialogPickerColor2;
-                            // Wait for the picker to close, if dialog was dismissed,
-                            // then restore the color we had before it was opened.
-                            if (!(await colorPickerDialog(dialogPickerColor2,
-                                updateDialogPickerColor2))) {
-                              setState(() {
-                                dialogPickerColor2 = colorBeforeDialog;
-                              });
-                            }
-                          }),
-                    ],
+                  Text("Color 1 Primary",
+                      style: Theme.of(context).textTheme.bodySmall!),
+                  ColorIndicator(
+                    width: 44,
+                    height: 44,
+                    borderRadius: 4,
+                    color: dialogPickerColor1,
+                    onSelectFocus: false,
+                    onSelect: () async {
+                      // Store current color before we open the dialog.
+                      final Color colorBeforeDialog = dialogPickerColor1;
+                      // Wait for the picker to close, if dialog was dismissed,
+                      // then restore the color we had before it was opened.
+                      if (!(await colorPickerDialog(
+                          dialogPickerColor1, updateDialogPickerColor1))) {
+                        setState(() {
+                          dialogPickerColor1 = colorBeforeDialog;
+                        });
+                      }
+                    },
                   ),
                   Container(
-                    width: 30,
+                    height: 10,
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Color 1 Secondary",
-                          style: Theme.of(context).textTheme.bodySmall!),
-                      ColorIndicator(
-                        width: 44,
-                        height: 44,
-                        borderRadius: 4,
-                        color: dialogPickerColor1_sec,
-                        onSelectFocus: false,
-                        onSelect: () async {
-                          // Store current color before we open the dialog.
-                          final Color colorBeforeDialog =
-                              dialogPickerColor1_sec;
-                          // Wait for the picker to close, if dialog was dismissed,
-                          // then restore the color we had before it was opened.
-                          if (!(await colorPickerDialog(dialogPickerColor1_sec,
-                              updateDialogPickerColor1_sec))) {
-                            setState(() {
-                              dialogPickerColor1_sec = colorBeforeDialog;
-                            });
-                          }
-                        },
-                      ),
-                      Container(
-                        height: 10,
-                      ),
-                      Text("Color 2 Secondary",
-                          style: Theme.of(context).textTheme.bodySmall!),
-                      ColorIndicator(
-                        width: 44,
-                        height: 44,
-                        borderRadius: 4,
-                        color: dialogPickerColor2_sec,
-                        onSelectFocus: false,
-                        onSelect: () async {
-                          // Store current color before we open the dialog.
-                          final Color colorBeforeDialog =
-                              dialogPickerColor2_sec;
-                          // Wait for the picker to close, if dialog was dismissed,
-                          // then restore the color we had before it was opened.
-                          if (!(await colorPickerDialog(dialogPickerColor2_sec,
-                              updateDialogPickerColor2_sec))) {
-                            setState(() {
-                              dialogPickerColor2_sec = colorBeforeDialog;
-                            });
-                          }
-                        },
-                      ),
-                    ],
+                  Text("Color 2 Primary",
+                      style: Theme.of(context).textTheme.bodySmall!),
+                  ColorIndicator(
+                      width: 44,
+                      height: 44,
+                      borderRadius: 4,
+                      color: dialogPickerColor2,
+                      onSelectFocus: false,
+                      onSelect: () async {
+                        // Store current color before we open the dialog.
+                        final Color colorBeforeDialog = dialogPickerColor2;
+                        // Wait for the picker to close, if dialog was dismissed,
+                        // then restore the color we had before it was opened.
+                        if (!(await colorPickerDialog(
+                            dialogPickerColor2, updateDialogPickerColor2))) {
+                          setState(() {
+                            dialogPickerColor2 = colorBeforeDialog;
+                          });
+                        }
+                      }),
+                ],
+              ),
+              Container(
+                width: 30,
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Color 1 Secondary",
+                      style: Theme.of(context).textTheme.bodySmall!),
+                  ColorIndicator(
+                    width: 44,
+                    height: 44,
+                    borderRadius: 4,
+                    color: dialogPickerColor1_sec,
+                    onSelectFocus: false,
+                    onSelect: () async {
+                      // Store current color before we open the dialog.
+                      final Color colorBeforeDialog = dialogPickerColor1_sec;
+                      // Wait for the picker to close, if dialog was dismissed,
+                      // then restore the color we had before it was opened.
+                      if (!(await colorPickerDialog(dialogPickerColor1_sec,
+                          updateDialogPickerColor1_sec))) {
+                        setState(() {
+                          dialogPickerColor1_sec = colorBeforeDialog;
+                        });
+                      }
+                    },
+                  ),
+                  Container(
+                    height: 10,
+                  ),
+                  Text("Color 2 Secondary",
+                      style: Theme.of(context).textTheme.bodySmall!),
+                  ColorIndicator(
+                    width: 44,
+                    height: 44,
+                    borderRadius: 4,
+                    color: dialogPickerColor2_sec,
+                    onSelectFocus: false,
+                    onSelect: () async {
+                      // Store current color before we open the dialog.
+                      final Color colorBeforeDialog = dialogPickerColor2_sec;
+                      // Wait for the picker to close, if dialog was dismissed,
+                      // then restore the color we had before it was opened.
+                      if (!(await colorPickerDialog(dialogPickerColor2_sec,
+                          updateDialogPickerColor2_sec))) {
+                        setState(() {
+                          dialogPickerColor2_sec = colorBeforeDialog;
+                        });
+                      }
+                    },
                   ),
                 ],
               ),
-            )),
+            ],
+          ),
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -656,7 +653,7 @@ class _SubFilePage extends State<SubFilePage> {
   }
 
   Widget alphaRefs(context) {
-    return ConstrainedBox(
+    return Container(
         constraints: BoxConstraints.tightFor(height: 70),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -698,8 +695,8 @@ class _SubFilePage extends State<SubFilePage> {
   }
 
   Widget randOffs(context) {
-    return ConstrainedBox(
-      constraints: BoxConstraints.tightFor(height: 100),
+    return Container(
+      constraints: BoxConstraints(maxHeight: 100),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -748,7 +745,7 @@ class _SubFilePage extends State<SubFilePage> {
       children: [
         Padding(
           padding: const EdgeInsets.all(1),
-          child: DecoratedBox(
+          child: Container(
             decoration: BoxDecoration(
                 color: Colors.teal[200],
                 borderRadius: BorderRadius.circular(10)),
@@ -787,7 +784,7 @@ class _SubFilePage extends State<SubFilePage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8),
-                  child: DecoratedBox(
+                  child: Container(
                     decoration: BoxDecoration(
                         color: Colors.grey[400],
                         borderRadius: BorderRadius.circular(7)),
@@ -991,7 +988,7 @@ class _SubFilePage extends State<SubFilePage> {
           ),
           Padding(
             padding: const EdgeInsets.all(1),
-            child: DecoratedBox(
+            child: Container(
               decoration: BoxDecoration(
                   color: Colors.teal[200],
                   borderRadius: BorderRadius.circular(10)),
@@ -1168,7 +1165,7 @@ class _SubFilePage extends State<SubFilePage> {
       ..highlightedStatus.decoration =
           BoxDecoration(color: Colors.teal[200], borderRadius: borderRadius);
 
-    return ConstrainedBox(
+    return Container(
       constraints: BoxConstraints(maxHeight: 250),
       child: TabbedViewTheme(
         data: themeData,
