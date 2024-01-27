@@ -17,7 +17,6 @@ dependencies:
   # gets 5.0.0 RC
   google_fonts: '^6.1.0'
   desktop_window: '^0.4.0'
-  flutter_rename_app_plus3: '1.2.3'
   tabbed_view: '1.17.0'
   multi_split_view: '2.4.0'
   flutter_animate: '4.4.0'
@@ -37,11 +36,3 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
-flutter_rename_app_plus3:
-  application_name: "TL's Breff Editor"
-  dart_package_name: breff_editor
-  application_id: com.android.tl_breff_editor
-  bundle_id: com.ios.tl_breff_editor
-  android_package_name: com.breff_editor.app
-  ios_bundle_name: TL's Breff Editor
