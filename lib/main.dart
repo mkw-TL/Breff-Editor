@@ -5,7 +5,6 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:breff_editor/block_header.dart';
 // import 'package:path_provider/path_provider.dart';
-// import 'package:file_picker/file_picker.dart'; // other
 import 'package:file_selector/file_selector.dart';
 import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter_animate/flutter_animate.dart';
