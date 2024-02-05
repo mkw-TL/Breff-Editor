@@ -1,18 +1,36 @@
 import 'dart:ffi';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
 class DataProcessor {
   String dat;
+  int amountChopped;
 
-  DataProcessor(this.dat);
+  DataProcessor(this.dat, this.amountChopped);
 
   String chopAndAssign(int length) {
-    String result = int.parse(dat.substring(0, length * 2), radix: 16)
-        .toRadixString(16)
-        .padLeft(length, "0");
-    dat = dat.substring(length, dat.length);
+    String result = dat.substring(0, length * 2);
+    try {
+      dat =
+          dat.substring(length * 2); // upper bound of the length of the string
+      amountChopped += length * 2;
+    } catch (e) {
+      print(e);
+      print("length in data left is ${dat.length * 2}");
+      print("length * 2 to chop is: ${length * 2}");
+      print("amount chopped is: ${amountChopped}");
+      dat = dat.substring(length * 2);
+    }
     return result;
+  }
+
+  String nextFourBytes() {
+    return dat.substring(0, 8);
+  }
+
+  String hexPosition() {
+    return (amountChopped ~/ 2).toRadixString(16);
   }
 }
 
@@ -40,7 +58,12 @@ class SubFileData extends ChangeNotifier {
   late String emitInterval;
   late String inheritParticleTranslation;
   late String inheritChildEmmitterTransformation;
-  late String emitterDims;
+  late String emitterDim1;
+  late String emitterDim2;
+  late String emitterDim3;
+  late String emitterDim4;
+  late String emitterDim5;
+  late String emitterDim6;
   late String emitDiversion;
   late String randomVel;
   late String unknownFlags;
@@ -204,7 +227,8 @@ class SubFileData extends ChangeNotifier {
     // I could clean up the logic here to make it more
     // stylistically consistant with the other constructors
     bytes = bytes.substring(offset);
-    String thisBytes = splitAtExcl(bytes, lenDataBytes * 2)[0];
+    String thisBytes = splitAtExcl(
+        bytes, lenDataBytes * 2)[0]; // don't I pass in lenDataBytes times two?
     print("our thisBytes is $thisBytes");
     otherBytes = splitAtExcl(thisBytes, lenDataBytes * 2)[1];
     thisBytes = splitAtExcl(thisBytes, 8)[1];
@@ -212,9 +236,11 @@ class SubFileData extends ChangeNotifier {
     print("emSizeInt is $emSizeInt");
     thisBytes = splitAtExcl(thisBytes, 8)[1];
     String emData = splitAtExcl(
-        thisBytes, emSizeInt)[0]; // the first header is already read
+        thisBytes, emSizeInt * 2)[0]; // the first header is already read
+    // times 2 because underpinning representation
     print("emData is $emData");
-    String partAndAnimData = splitAtExcl(thisBytes, emSizeInt)[1];
+    String partAndAnimData = splitAtExcl(thisBytes, emSizeInt * 2)[1];
+    print("partAndAnimData has size ${partAndAnimData.length}");
     print("partAndAnimData is $partAndAnimData");
 
     parseThis(emData, partAndAnimData);
@@ -240,7 +266,12 @@ class SubFileData extends ChangeNotifier {
     out.write(emitInterval);
     out.write(inheritParticleTranslation);
     out.write(inheritChildEmmitterTransformation);
-    out.write(emitterDims);
+    out.write(emitterDim1);
+    out.write(emitterDim2);
+    out.write(emitterDim3);
+    out.write(emitterDim4);
+    out.write(emitterDim5);
+    out.write(emitterDim6);
     out.write(emitDiversion);
     out.write(randomVel);
     out.write(randomMoment);
@@ -416,12 +447,19 @@ class SubFileData extends ChangeNotifier {
   }
 
   void parseThis(emData, partAndAnimData) {
-    print("we are now parsing our subfile_data");
-    DataProcessor emProc = DataProcessor(emData);
+    debugPrint("we are now parsing our subfile_data");
+    DataProcessor emProc = DataProcessor(emData, 0);
+    debugPrint(
+        "our first four bytes of subfile_data should be, ${emProc.nextFourBytes()}");
+    debugPrint("our offset is, ${emProc.hexPosition()}");
     unknown0 = emProc.chopAndAssign(4);
     emitFlags = emProc.chopAndAssign(3);
+    debugPrint(
+        "To test chopping, chop one off of this: ${emProc.nextFourBytes()}");
     emitterShape = emProc.chopAndAssign(1);
+    debugPrint("Should give this: ${emProc.nextFourBytes()}");
     emitterLife = emProc.chopAndAssign(2);
+    debugPrint("And the next bytes of this: ${emProc.nextFourBytes()}");
     particleLife = emProc.chopAndAssign(2);
     particleLifeRandom = emProc.chopAndAssign(1);
     inheritChildParticleTranslation = emProc.chopAndAssign(1);
@@ -433,22 +471,31 @@ class SubFileData extends ChangeNotifier {
     emitInterval = emProc.chopAndAssign(2);
     inheritParticleTranslation = emProc.chopAndAssign(1);
     inheritChildEmmitterTransformation = emProc.chopAndAssign(1);
-    emitterDims = emProc.chopAndAssign(18); // TODO
+    debugPrint("we are now parsing our emitterDims (offset should be 1c)");
+    debugPrint("our offset is, ${emProc.hexPosition()}");
+    emitterDim1 = emProc.chopAndAssign(4);
+    emitterDim2 = emProc.chopAndAssign(4);
+    emitterDim3 = emProc.chopAndAssign(4);
+    emitterDim4 = emProc.chopAndAssign(4);
+    emitterDim5 = emProc.chopAndAssign(4);
+    emitterDim6 = emProc.chopAndAssign(4);
     emitDiversion = emProc.chopAndAssign(2);
     randomVel = emProc.chopAndAssign(1);
     randomMoment = emProc.chopAndAssign(1);
-    randomMoment = emProc.chopAndAssign(4);
     powerRadiation = emProc.chopAndAssign(4);
     powerYAxisVal = emProc.chopAndAssign(4);
+    debugPrint("after powerYAxisVal. Hex: ${emProc.hexPosition()}");
     powerRandom = emProc.chopAndAssign(4);
     powerNormal = emProc.chopAndAssign(4);
     diffEmitNormal = emProc.chopAndAssign(4);
     powerSpec = emProc.chopAndAssign(4);
     diffSpec = emProc.chopAndAssign(4);
-    emAngle = emProc.chopAndAssign(4);
+    debugPrint("after diffSpec. Hex: ${emProc.hexPosition()}");
+    emAngle = emProc.chopAndAssign(12);
     scale = emProc.chopAndAssign(12);
     rot = emProc.chopAndAssign(12);
-    debugPrint("midst processing subfile data");
+    debugPrint("after rot, offset should start at 78");
+    debugPrint("our offset is, ${emProc.hexPosition()}");
     transl = emProc.chopAndAssign(12);
     LODNearest = emProc.chopAndAssign(1);
     LODFurthest = emProc.chopAndAssign(1);
@@ -489,10 +536,12 @@ class SubFileData extends ChangeNotifier {
     TEV4Scale = emProc.chopAndAssign(1);
     TEV4Clamp = emProc.chopAndAssign(1);
     TEV4OutRegister = emProc.chopAndAssign(1);
+    debugPrint("midst processing subfile data again2");
     TEV1AlphaInput = emProc.chopAndAssign(4);
     TEV2AlphaInput = emProc.chopAndAssign(4);
     TEV3AlphaInput = emProc.chopAndAssign(4);
     TEV4AlphaInput = emProc.chopAndAssign(4);
+    debugPrint("midst processing subfile data again3");
     alphaTEV1Operations = emProc.chopAndAssign(1);
     alphaTEV1Bias = emProc.chopAndAssign(1);
     alphaTEV1Scale = emProc.chopAndAssign(1);
@@ -513,6 +562,7 @@ class SubFileData extends ChangeNotifier {
     alphaTEV4Scale = emProc.chopAndAssign(1);
     alphaTEV4Clamp = emProc.chopAndAssign(1);
     alphaTEV4OutRegister = emProc.chopAndAssign(1);
+    debugPrint("midst processing subfile data again4");
     constColSelectors = emProc.chopAndAssign(4);
     constAlphaSelectors = emProc.chopAndAssign(4);
     blendModeType = emProc.chopAndAssign(1);
@@ -521,7 +571,8 @@ class SubFileData extends ChangeNotifier {
     blendOperation = emProc.chopAndAssign(1);
     assignPartColTEVColRegisters = emProc.chopAndAssign(8);
     assignPartAlphTEVAlphRegisters = emProc.chopAndAssign(8);
-    debugPrint("midst processing subfile data again again");
+    debugPrint("after PartAlphTEV Alph Registers");
+    debugPrint("our offset is, ${emProc.hexPosition()}");
     ZCompFunct = emProc.chopAndAssign(1);
     alphFlickType = emProc.chopAndAssign(1);
     alphFlickCycleLen = emProc.chopAndAssign(2);
@@ -531,12 +582,14 @@ class SubFileData extends ChangeNotifier {
     lightingType = emProc.chopAndAssign(1);
     lightingAmbCol = emProc.chopAndAssign(4);
     lightDiffCol = emProc.chopAndAssign(4);
+    debugPrint("midst processing subfile data again again again");
     lightRadius = emProc.chopAndAssign(4);
     lightPosX = emProc.chopAndAssign(4);
     lightPosY = emProc.chopAndAssign(4);
     lightPosZ = emProc.chopAndAssign(4);
     indTexMat1 = emProc.chopAndAssign(4);
     indTexMat2 = emProc.chopAndAssign(4);
+    debugPrint("midst processing subfile data again again again again");
     indTexMat3 = emProc.chopAndAssign(4);
     indTexMat4 = emProc.chopAndAssign(4);
     indTexMat5 = emProc.chopAndAssign(4);
@@ -552,12 +605,14 @@ class SubFileData extends ChangeNotifier {
     gabiHelp1 = emProc.chopAndAssign(1);
     gabiHelp2 = emProc.chopAndAssign(1);
     padding1 = emProc.chopAndAssign(1);
+    debugPrint("our offset is, ${emProc.hexPosition()}");
     zOffset = emProc.chopAndAssign(4);
     debugPrint("end of subfile em data");
+    debugPrint(emProc.dat);
 
     // particle data
-    DataProcessor partProc = DataProcessor(partAndAnimData);
-    print("our partProc dat is ${partProc.dat}");
+    DataProcessor partProc = DataProcessor(partAndAnimData, 0);
+    debugPrint("our partProc and Anim dat is ${partProc.dat}");
     lenParticleDat = partProc.chopAndAssign(4);
     partBytes = partProc.chopAndAssign(4);
     col1Primary = partProc.chopAndAssign(4);
@@ -584,13 +639,12 @@ class SubFileData extends ChangeNotifier {
     rotOffsetRand1 = partProc.chopAndAssign(1);
     rotOffsetRand2 = partProc.chopAndAssign(1);
     rotOffsetRand3 = partProc.chopAndAssign(1);
-    print("our partProc dat is ${partProc.dat}");
     rotOffset = partProc.chopAndAssign(12);
-    print("our rotOffset is $rotOffset");
-    print("our partProc dat is ${partProc.dat}");
-    print("subfile_data particle data, before variable texture lengths");
+    debugPrint("our rotOffset is $rotOffset");
+    debugPrint("subfile_data particle data, before variable texture lengths");
+    debugPrint("our partProc dat is ${partProc.dat}");
     lenTexRef1 = partProc.chopAndAssign(2);
-    print("out lenTexRef1 is $lenTexRef1");
+    debugPrint("out lenTexRef1 is $lenTexRef1");
     texRef1 = partProc.chopAndAssign(int.parse(lenTexRef1, radix: 16));
     lenTexRef2 = partProc.chopAndAssign(2);
     texRef2 = partProc.chopAndAssign(int.parse(lenTexRef2, radix: 16));
@@ -600,6 +654,7 @@ class SubFileData extends ChangeNotifier {
     // Spacing and animationData combined together
     // bad practice, but maybe can get away with it
     animationData = partProc.dat; // no getter needed get rekt java
+    // any animation stuff here
     debugPrint("and animation data is $animationData");
   }
 

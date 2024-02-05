@@ -8,6 +8,7 @@ import 'package:breff_editor/block_header.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:get/utils.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:provider/provider.dart';
 import 'subfile_header.dart';
@@ -163,10 +164,30 @@ void noop() {
   1 + 1;
 }
 
-Widget customText(String str, BuildContext context) {
+bool isValidNumber(String input) {
+  try {
+    // Parse the string to an integer
+    int number = int.parse(input);
+
+    // Check if the number is within the valid range (0 to 255)
+    return number >= 0 && number <= 255;
+  } catch (e) {
+    // Catch the exception if parsing fails (e.g., the input is not a valid integer)
+    print(e);
+    return false;
+  }
+}
+
+Widget customText(String str, BuildContext context,
+    {String validat = "Must be in 0 to 255"}) {
   return Container(
     constraints: BoxConstraints(maxWidth: 100),
-    child: TextField(
+    child: TextFormField(
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        validator: (String? value) {
+          print(value);
+          return (value != null && isValidNumber(value) ? null : validat);
+        },
         style: Theme.of(context)
             .textTheme
             .bodyMedium!
