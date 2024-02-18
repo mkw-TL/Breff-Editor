@@ -54,10 +54,13 @@ class SectionHeader {
     setSectionHeaderSize(splitAtExcl(bytes, 8)[0]);
     debugPrint(
         "in section_header. our section header size is $sectionHeaderSize");
-    String thisBytes = (splitAtExcl(bytes, 24)[1]);
+    String thisBytes = bytes;
+    thisBytes = splitAtExcl(thisBytes, 8)[1];
+    thisBytes = splitAtExcl(thisBytes, 8)[1];
+    thisBytes = splitAtExcl(thisBytes, 8)[1]; // pointer to next
     setAsciiLen(splitAtExcl(thisBytes, 4)[0]);
     thisBytes = splitAtExcl(thisBytes, 4)[1];
-    thisBytes = splitAtExcl(thisBytes, 4)[1]; // padding
+    thisBytes = splitAtExcl(thisBytes, 4)[1];
     int asciiLenInt =
         (int.parse(asciiLen, radix: 16) - 1) * 2; // minus one bc null
     asciiName = splitAtExcl(thisBytes, asciiLenInt)[0];

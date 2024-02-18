@@ -26,7 +26,13 @@ class DataProcessor {
   }
 
   String nextFourBytes() {
-    return dat.substring(0, 8);
+    try {
+      return dat.substring(0, 8);
+    } catch (e) {
+      debugPrint(dat);
+      debugPrint(dat);
+      return dat.substring(0, 8);
+    }
   }
 
   String hexPosition() {
@@ -44,6 +50,7 @@ class SubFileData extends ChangeNotifier {
   String bytes;
   late String otherBytes;
   late String emBytes;
+  late String emSize;
   // assuming emitter has size 0x14c
   late String emitterShape;
   late String emitterLife;
@@ -66,7 +73,7 @@ class SubFileData extends ChangeNotifier {
   late String emitterDim6;
   late String emitDiversion;
   late String randomVel;
-  late String unknownFlags;
+  late String unknown0;
   late String emitFlags;
   late String randomMoment;
   late String powerRadiation;
@@ -85,13 +92,13 @@ class SubFileData extends ChangeNotifier {
   late String LODMinEm;
   late String LODAlpha;
   late String randSeed;
-  late String unknown0;
+  late String unknown1;
   late String drawFlagsBitfield;
   late String alphaComp0;
   late String alphaComp1;
   late String alphaCompOperation;
   late String numTEVStages;
-  late String unknown1;
+  late String unknown2;
   late String indTEVEnabled;
   late String textureUsedTEV;
   late String TEVColInputSourcesA;
@@ -228,34 +235,34 @@ class SubFileData extends ChangeNotifier {
         "am in subfile_data. offset is ${offset}, not-hex = ${int.parse(offset, radix: 16)} lenDataBytes is ${int.parse(lenDataBytes, radix: 16)} (hex = ${lenDataBytes})");
     // I could clean up the logic here to make it more
     // stylistically consistant with the other constructors
-    bytes = bytes.substring(int.parse(offset, radix: 16));
+    bytes = bytes.substring(int.parse(offset, radix: 16) * 2);
     String thisBytes =
-        splitAtExcl(bytes, int.parse(lenDataBytes, radix: 16) * 2)[
-            0]; // don't I pass in lenDataBytes times two?
+        splitAtExcl(bytes, int.parse(lenDataBytes, radix: 16) * 2)[0];
     print("our thisBytes is $thisBytes");
     otherBytes =
         splitAtExcl(thisBytes, int.parse(lenDataBytes, radix: 16) * 2)[1];
     thisBytes = splitAtExcl(thisBytes, 8)[1];
-    int emSizeInt = int.parse(splitAtExcl(thisBytes, 8)[0], radix: 16);
-    print("emSizeInt is $emSizeInt");
+    emSize = splitAtExcl(thisBytes, 8)[0];
+    print("emSizeInt is $emSize");
     thisBytes = splitAtExcl(thisBytes, 8)[1];
-    String emData = splitAtExcl(
-        thisBytes, emSizeInt * 2)[0]; // the first header is already read
+    emBytes = splitAtExcl(thisBytes, int.parse(emSize, radix: 16) * 2)[
+        0]; // the first header is already read
     // times 2 because underpinning representation
-    print("emData is $emData");
-    String partAndAnimData = splitAtExcl(thisBytes, emSizeInt * 2)[1];
+    print("emData is $emBytes");
+    String partAndAnimData =
+        splitAtExcl(thisBytes, int.parse(emSize, radix: 16) * 2)[1];
     print("partAndAnimData has size ${partAndAnimData.length}");
     print("partAndAnimData is $partAndAnimData");
 
-    parseThis(emData, partAndAnimData);
+    parseThis(emBytes, partAndAnimData);
   }
 
   String getStr() {
     debugPrint("we are now writing a subfile data");
     StringBuffer out = StringBuffer();
     out.write("0000"); // pointer to effect name
-    out.write(emBytes);
-    out.write(unknownFlags);
+    out.write(emSize);
+    out.write(unknown0);
     out.write(emitFlags);
     out.write(emitterShape);
     out.write(emitterLife);
@@ -296,13 +303,13 @@ class SubFileData extends ChangeNotifier {
     out.write(LODMinEm);
     out.write(LODAlpha);
     out.write(randSeed);
-    out.write(unknown0);
+    out.write(unknown1);
     out.write(drawFlagsBitfield);
     out.write(alphaComp0);
     out.write(alphaComp1);
     out.write(alphaCompOperation);
     out.write(numTEVStages);
-    out.write(unknown1);
+    out.write(unknown2);
     out.write(indTEVEnabled);
     out.write(textureUsedTEV);
     out.write(TEVColInputSourcesA);
@@ -393,19 +400,19 @@ class SubFileData extends ChangeNotifier {
     out.write(gabiHelp2);
     out.write(padding1);
     out.write(zOffset);
-    String outStr = "";
-    if (out.toString().length != int.parse(emBytes, radix: 16)) {
-      print(out.toString());
-      print(out.toString().length);
-      print(emBytes);
-      print(int.parse(emBytes));
-    } else {
-      outStr = out.toString().padRight(int.parse(emBytes, radix: 16));
+    String outStr = out.toString();
+    try {
+      assert(outStr.length - 8 == int.parse(emSize, radix: 16) * 2);
+      // watch out for chars, and don't subtract out size
+    } catch (e) {
+      print(outStr.length - 8);
+      print(int.parse(emSize, radix: 16) * 2);
+      rethrow;
     }
+
     StringBuffer out2 = StringBuffer();
     // particle
     out2.write(lenParticleDat);
-    out2.write(partBytes);
     out2.write(col1Primary);
     out2.write(col1Secondary);
     out2.write(col2Primary);
@@ -437,15 +444,13 @@ class SubFileData extends ChangeNotifier {
     out2.write(texRef2);
     out2.write(lenTexRef3);
     out2.write(texRef3);
-    String outStr2 = "";
-    if (out2.toString().length != int.parse(partBytes, radix: 16)) {
-      debugPrint("uh oh. particle data is wrong");
-      debugPrint(out2.toString());
-      debugPrint(out2.toString().length.toString());
-      debugPrint(partBytes);
-      debugPrint(int.parse(partBytes).toString());
-    } else {
-      outStr2 = out2.toString().padRight(int.parse(partBytes, radix: 16));
+    String outStr2 = out2.toString();
+    try {
+      assert(outStr2.length - 8 == int.parse(lenParticleDat, radix: 16) * 2);
+    } catch (e) {
+      print(outStr2.length - 8);
+      print(lenParticleDat * 2);
+      rethrow;
     }
     String outStr3 = animationData; // not implemented
     return "$outStr$outStr2$outStr3";
@@ -508,13 +513,13 @@ class SubFileData extends ChangeNotifier {
     LODMinEm = emProc.chopAndAssign(1);
     LODAlpha = emProc.chopAndAssign(1);
     randSeed = emProc.chopAndAssign(4);
-    unknown0 = emProc.chopAndAssign(8);
+    unknown1 = emProc.chopAndAssign(8);
     drawFlagsBitfield = emProc.chopAndAssign(2);
     alphaComp0 = emProc.chopAndAssign(1);
     alphaComp1 = emProc.chopAndAssign(1);
     alphaCompOperation = emProc.chopAndAssign(1);
     numTEVStages = emProc.chopAndAssign(1);
-    unknown1 = emProc.chopAndAssign(1);
+    unknown2 = emProc.chopAndAssign(1);
     indTEVEnabled = emProc.chopAndAssign(1);
     textureUsedTEV = emProc.chopAndAssign(4);
     debugPrint("midst processing subfile data again");

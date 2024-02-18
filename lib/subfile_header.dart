@@ -22,11 +22,10 @@ class SubFileHeader extends ChangeNotifier {
 
   SubFileHeader({required this.data}) {
     asciiLen = splitAtExcl(data, 4)[0];
+    String thisData = splitAtExcl(data, 4)[1];
+
     int len = int.parse(asciiLen, radix: 16);
     print("our length of the ascii str is $len");
-
-    String thisData = splitAtExcl(data, 4)[1];
-    print("subFileHeader data to work with is $thisData");
 
     asciiName = splitAtExcl(thisData, len * 2 - 2)[0]; // bytes and Uint16
     print("our ascii name in subfile_header is, $asciiName");
@@ -48,6 +47,10 @@ class SubFileHeader extends ChangeNotifier {
     out.write(subFileOffset);
     out.write(sizeDataBytes);
     return out.toString();
+  }
+
+  String getDatSize() {
+    return sizeDataBytes;
   }
 
   String getAsciiName() {
