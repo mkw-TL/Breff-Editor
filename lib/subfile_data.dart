@@ -260,7 +260,7 @@ class SubFileData extends ChangeNotifier {
   String getStr() {
     debugPrint("we are now writing a subfile data");
     StringBuffer out = StringBuffer();
-    out.write("0000"); // pointer to effect name
+    out.write("00000000"); // pointer to effect name
     out.write(emSize);
     out.write(unknown0);
     out.write(emitFlags);
@@ -285,7 +285,6 @@ class SubFileData extends ChangeNotifier {
     out.write(emitterDim6);
     out.write(emitDiversion);
     out.write(randomVel);
-    out.write(randomMoment);
     out.write(randomMoment);
     out.write(powerRadiation);
     out.write(powerYAxisVal);
@@ -402,10 +401,10 @@ class SubFileData extends ChangeNotifier {
     out.write(zOffset);
     String outStr = out.toString();
     try {
-      assert(outStr.length - 8 == int.parse(emSize, radix: 16) * 2);
+      assert(outStr.length - 16 == int.parse(emSize, radix: 16) * 2);
       // watch out for chars, and don't subtract out size
     } catch (e) {
-      print(outStr.length - 8);
+      print(outStr.length - 16);
       print(int.parse(emSize, radix: 16) * 2);
       rethrow;
     }
@@ -424,6 +423,14 @@ class SubFileData extends ChangeNotifier {
     out2.write(texScale2);
     out2.write(texScale3);
     out2.write(texRot);
+    String outStrTest0 = out2.toString();
+    try {
+      assert(outStrTest0.length - 8 == 80 * 2);
+    } catch (e) {
+      print(outStrTest0.length - 8);
+      print("${80 * 2}");
+      rethrow;
+    }
     out2.write(texTrans1);
     out2.write(texTrans2);
     out2.write(texTrans3);
@@ -433,24 +440,53 @@ class SubFileData extends ChangeNotifier {
     out2.write(textureWrap);
     out2.write(textureReverse);
     out2.write(alphaCompRef0);
+    String outStrTest1 = out2.toString();
+    try {
+      assert(outStrTest1.length - 8 == 120 * 2);
+    } catch (e) {
+      print(outStrTest1.length - 8);
+      print("${120 * 2}");
+      rethrow;
+    }
     out2.write(alphaCompRef1);
     out2.write(rotOffsetRand1);
     out2.write(rotOffsetRand2);
     out2.write(rotOffsetRand3);
+    String outStrTest = out2.toString();
+    try {
+      assert(outStrTest.length - 8 == 124 * 2);
+    } catch (e) {
+      print(outStrTest.length - 8);
+      print("${124 * 2}");
+      rethrow;
+    }
     out2.write(rotOffset);
     out2.write(lenTexRef1);
+    String outStrTest4 = out2.toString();
+    try {
+      assert(outStrTest4.length - 8 == (124 + 12 + 2) * 2);
+    } catch (e) {
+      print(outStrTest4.length - 8);
+      print("${(124 + 12 + 2) * 2}");
+      rethrow;
+    }
     out2.write(texRef1);
+    String outStrTest3 = out2.toString();
+    try {
+      assert(outStrTest3.length - 8 ==
+          (124 + 12 + 2 + int.parse(lenTexRef1, radix: 16)) * 2);
+    } catch (e) {
+      print(outStrTest3.length - 8);
+      print("${124 + 12 + 2 + int.parse(lenTexRef1, radix: 16) * 2}");
+      rethrow;
+    }
     out2.write(lenTexRef2);
     out2.write(texRef2);
     out2.write(lenTexRef3);
     out2.write(texRef3);
     String outStr2 = out2.toString();
-    try {
-      assert(outStr2.length - 8 == int.parse(lenParticleDat, radix: 16) * 2);
-    } catch (e) {
-      print(outStr2.length - 8);
-      print(lenParticleDat * 2);
-      rethrow;
+    if (outStr2.length != int.parse(lenParticleDat, radix: 16) * 2) {
+      outStr2.padRight(int.parse(lenParticleDat, radix: 16), "00");
     }
     String outStr3 = animationData; // not implemented
     return "$outStr$outStr2$outStr3";
