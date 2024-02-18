@@ -315,7 +315,10 @@ class _SubFilePage extends State<SubFilePage> {
   bool childEmTransl = false;
   @override
   Widget build(context) {
-    return subFile(context);
+    return ChangeNotifierProvider(
+        create: (_) => AppState(),
+        child: Consumer<AppState>(
+            builder: (context, appState, _) => subFile(context)));
   }
 
   void updateDialogPickerColor2(Color color) {
@@ -506,10 +509,6 @@ class _SubFilePage extends State<SubFilePage> {
   }
 
   Widget firstColumn(BuildContext context) {
-    void noop_col(Color color) {
-      1 + 1;
-    }
-
     // String col1Prim;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
