@@ -50,13 +50,18 @@ class SubFileTable extends ChangeNotifier {
       SubFileHeader header = SubFileHeader(data: thisData);
       print("subfile header parsed");
       appendToHeaderList(header);
-      int offset = int.parse(header.getSubFileOffset(), radix: 16) * 2;
-      int lenDataBytes = int.parse(header.sizeDataBytes, radix: 16) * 2;
-      SubFileData dat =
-          SubFileData(bytes: data, offset: offset, lenDataBytes: lenDataBytes);
+      String offsetFromProjHeader = header.getSubFileOffset();
+      debugPrint("our offsetFromProjHeader is ${offsetFromProjHeader}");
+      String lenDataBytes = header.sizeDataBytes;
+      SubFileData dat = SubFileData(
+          bytes: data,
+          offset: offsetFromProjHeader,
+          lenDataBytes:
+              lenDataBytes); // uses data, which is from the start of the Table
       appendToDataList(dat);
       print("subfile data parsed");
       thisData = header.getOtherData(thisData); // chop off header part
+      debugPrint("our new header chopped is $thisData");
     }
   }
 

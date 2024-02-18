@@ -90,10 +90,11 @@ class AppState extends ChangeNotifier {
         int i = 0;
         for (var _ in byteList) {
           String tempString = byteList[i].toRadixString(16).padLeft(2, "0");
+          // We take each Uint8, padd it if necessary, then put it in a str
           buff.write(tempString);
           i++;
         }
-        debugPrint(phyl.toString());
+        debugPrint("phyl is ${phyl.toString()}");
         // debugPrint(buff.toString());
         readFile(buff.toString());
         notifyListeners();
@@ -1216,7 +1217,7 @@ class _SubFilePage extends State<SubFilePage> {
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: thirdColumn(context),
+          child: thirdColumnTabs(context),
         ),
       ]),
     ));

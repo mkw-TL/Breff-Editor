@@ -37,6 +37,7 @@ class SubFileHeader extends ChangeNotifier {
     sizeDataBytes = splitAtExcl(thisData, 8)[0];
     print("our sizeDataBytes is $sizeDataBytes");
     otherData = splitAtExcl(thisData, 8)[1];
+    print("ending parsing subfile_header");
   }
 
   String getStr() {

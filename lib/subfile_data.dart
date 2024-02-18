@@ -39,8 +39,8 @@ class SubFileData extends ChangeNotifier {
     return [str.substring(0, index), str.substring(index, str.length)];
   }
 
-  int offset;
-  int lenDataBytes;
+  late String offset;
+  late String lenDataBytes;
   String bytes;
   late String otherBytes;
   late String emBytes;
@@ -169,7 +169,7 @@ class SubFileData extends ChangeNotifier {
   late String indTexMat4;
   late String indTexMat5;
   late String indTexMat6;
-  late String indTexScale; //sbyte
+  late String indTexMatScale; //sbyte
   late String pivotX;
   late String pivotY;
   late String padding0;
@@ -221,16 +221,20 @@ class SubFileData extends ChangeNotifier {
   late String animationData;
 
   SubFileData(
-      {required this.bytes, required this.offset, required this.lenDataBytes}) {
+      {required this.bytes,
+      required String this.offset,
+      required String this.lenDataBytes}) {
     print(
-        "am in subfile_data. offset is $offset, lenDataBytes is $lenDataBytes");
+        "am in subfile_data. offset is ${offset}, not-hex = ${int.parse(offset, radix: 16)} lenDataBytes is ${int.parse(lenDataBytes, radix: 16)} (hex = ${lenDataBytes})");
     // I could clean up the logic here to make it more
     // stylistically consistant with the other constructors
-    bytes = bytes.substring(offset);
-    String thisBytes = splitAtExcl(
-        bytes, lenDataBytes * 2)[0]; // don't I pass in lenDataBytes times two?
+    bytes = bytes.substring(int.parse(offset, radix: 16));
+    String thisBytes =
+        splitAtExcl(bytes, int.parse(lenDataBytes, radix: 16) * 2)[
+            0]; // don't I pass in lenDataBytes times two?
     print("our thisBytes is $thisBytes");
-    otherBytes = splitAtExcl(thisBytes, lenDataBytes * 2)[1];
+    otherBytes =
+        splitAtExcl(thisBytes, int.parse(lenDataBytes, radix: 16) * 2)[1];
     thisBytes = splitAtExcl(thisBytes, 8)[1];
     int emSizeInt = int.parse(splitAtExcl(thisBytes, 8)[0], radix: 16);
     print("emSizeInt is $emSizeInt");
@@ -376,6 +380,7 @@ class SubFileData extends ChangeNotifier {
     out.write(indTexMat4);
     out.write(indTexMat5);
     out.write(indTexMat6);
+    out.write(indTexMatScale);
     out.write(pivotX);
     out.write(pivotY);
     out.write(padding0);
@@ -451,13 +456,13 @@ class SubFileData extends ChangeNotifier {
     DataProcessor emProc = DataProcessor(emData, 0);
     debugPrint(
         "our first four bytes of subfile_data should be, ${emProc.nextFourBytes()}");
-    debugPrint("our offset is, ${emProc.hexPosition()}");
+    debugPrint("our hex offset is, ${emProc.hexPosition()} maybe + 80");
     unknown0 = emProc.chopAndAssign(4);
+    debugPrint("our unknown0 is ${unknown0}");
     emitFlags = emProc.chopAndAssign(3);
-    debugPrint(
-        "To test chopping, chop one off of this: ${emProc.nextFourBytes()}");
+    debugPrint("our hex offset is, ${emProc.hexPosition()}");
+    debugPrint("our emitFlags is, ${emitFlags}");
     emitterShape = emProc.chopAndAssign(1);
-    debugPrint("Should give this: ${emProc.nextFourBytes()}");
     emitterLife = emProc.chopAndAssign(2);
     debugPrint("And the next bytes of this: ${emProc.nextFourBytes()}");
     particleLife = emProc.chopAndAssign(2);
@@ -474,6 +479,7 @@ class SubFileData extends ChangeNotifier {
     debugPrint("we are now parsing our emitterDims (offset should be 1c)");
     debugPrint("our offset is, ${emProc.hexPosition()}");
     emitterDim1 = emProc.chopAndAssign(4);
+    debugPrint("Our first emitterDim1 is ${emitterDim1}");
     emitterDim2 = emProc.chopAndAssign(4);
     emitterDim3 = emProc.chopAndAssign(4);
     emitterDim4 = emProc.chopAndAssign(4);
@@ -582,23 +588,30 @@ class SubFileData extends ChangeNotifier {
     lightingType = emProc.chopAndAssign(1);
     lightingAmbCol = emProc.chopAndAssign(4);
     lightDiffCol = emProc.chopAndAssign(4);
-    debugPrint("midst processing subfile data again again again");
+    debugPrint("lightRadius hex ${emProc.hexPosition()}");
     lightRadius = emProc.chopAndAssign(4);
+    debugPrint("lightRadius = ${lightRadius}");
     lightPosX = emProc.chopAndAssign(4);
     lightPosY = emProc.chopAndAssign(4);
     lightPosZ = emProc.chopAndAssign(4);
     indTexMat1 = emProc.chopAndAssign(4);
     indTexMat2 = emProc.chopAndAssign(4);
-    debugPrint("midst processing subfile data again again again again");
+    debugPrint("our hex is ${emProc.hexPosition()}");
+    debugPrint("our indTexMat2 is $indTexMat2");
     indTexMat3 = emProc.chopAndAssign(4);
     indTexMat4 = emProc.chopAndAssign(4);
     indTexMat5 = emProc.chopAndAssign(4);
     indTexMat6 = emProc.chopAndAssign(4);
+    debugPrint("hex is ${emProc.hexPosition()}");
+    indTexMatScale = emProc.chopAndAssign(1);
     pivotX = emProc.chopAndAssign(1);
+    debugPrint("pivotX is ${pivotX}");
     pivotY = emProc.chopAndAssign(1);
     padding0 = emProc.chopAndAssign(1);
     particleType = emProc.chopAndAssign(1);
+    debugPrint("hex is ${emProc.hexPosition()}");
     particleTypeOpt = emProc.chopAndAssign(1);
+    debugPrint("particleTypeOpt is ${particleTypeOpt}");
     movementType = emProc.chopAndAssign(1);
     rotAxis = emProc.chopAndAssign(1);
     gabiHelp0 = emProc.chopAndAssign(1);
@@ -607,38 +620,66 @@ class SubFileData extends ChangeNotifier {
     padding1 = emProc.chopAndAssign(1);
     debugPrint("our offset is, ${emProc.hexPosition()}");
     zOffset = emProc.chopAndAssign(4);
+    debugPrint("our zOffset is $zOffset");
     debugPrint("end of subfile em data");
     debugPrint(emProc.dat);
 
     // particle data
     DataProcessor partProc = DataProcessor(partAndAnimData, 0);
     debugPrint("our partProc and Anim dat is ${partProc.dat}");
+    debugPrint("our offset is, ${partProc.hexPosition()}");
     lenParticleDat = partProc.chopAndAssign(4);
-    partBytes = partProc.chopAndAssign(4);
+    debugPrint("our lenParticleDat is, ${lenParticleDat}");
     col1Primary = partProc.chopAndAssign(4);
+    debugPrint("our col1Primary is, ${col1Primary}");
     col1Secondary = partProc.chopAndAssign(4);
+    debugPrint("our col1Secondary is, ${col1Secondary}");
     col2Primary = partProc.chopAndAssign(4);
+    debugPrint("our col2Primary is, ${col2Primary}");
     col2Secondary = partProc.chopAndAssign(4);
+    debugPrint("our col2Secondary is, ${col2Secondary}");
     sizePart = partProc.chopAndAssign(8);
+    debugPrint("our sizePart is, ${sizePart}");
     scalePart = partProc.chopAndAssign(8);
+    debugPrint("our scalePart is, ${scalePart}");
     rotPart = partProc.chopAndAssign(12);
+    debugPrint("our rotPart is, ${rotPart}");
     texScale1 = partProc.chopAndAssign(8);
+    debugPrint("our texScale1 is, ${texScale1}");
     texScale2 = partProc.chopAndAssign(8);
+    debugPrint("our texScale2 is, ${texScale2}");
     texScale3 = partProc.chopAndAssign(8);
+    debugPrint("our texScale3 is, ${texScale3}");
     texRot = partProc.chopAndAssign(12);
+    debugPrint("our texRot is, ${texRot}");
     texTrans1 = partProc.chopAndAssign(8);
+    debugPrint("our texTrans1 is, ${texTrans1}");
     texTrans2 = partProc.chopAndAssign(8);
+    debugPrint("our texTrans2 is, ${texTrans2}");
     texTrans3 = partProc.chopAndAssign(8);
+    debugPrint("our texTrans3 is, ${texTrans3}");
+    debugPrint("our offset is, ${partProc.hexPosition()}");
     mTexture1 = partProc.chopAndAssign(4);
+    debugPrint("our mTexture1 is, ${mTexture1}");
     mTexture2 = partProc.chopAndAssign(4);
+    debugPrint("our mTexture2 is, ${mTexture2}");
     mTexture3 = partProc.chopAndAssign(4);
+    debugPrint("our mTexture3 is, ${mTexture3}");
     textureWrap = partProc.chopAndAssign(2);
+    debugPrint("our texWrap is, ${textureWrap}");
     textureReverse = partProc.chopAndAssign(1);
+    debugPrint("our textureReverse is, ${textureReverse}");
     alphaCompRef0 = partProc.chopAndAssign(1);
+    debugPrint("our alphaCompRef0 is, ${alphaComp0}");
+    debugPrint("our offset is, ${partProc.hexPosition()}");
     alphaCompRef1 = partProc.chopAndAssign(1);
+    debugPrint("our alphaCompRef1 is, ${alphaComp1}");
     rotOffsetRand1 = partProc.chopAndAssign(1);
+    debugPrint("our rotOffsetRand1 is, ${rotOffsetRand1}");
     rotOffsetRand2 = partProc.chopAndAssign(1);
+    debugPrint("our rotOffsetRand2 is, ${rotOffsetRand2}");
     rotOffsetRand3 = partProc.chopAndAssign(1);
+    debugPrint("our rotOffsetRand3 is, ${rotOffsetRand3}");
     rotOffset = partProc.chopAndAssign(12);
     debugPrint("our rotOffset is $rotOffset");
     debugPrint("subfile_data particle data, before variable texture lengths");

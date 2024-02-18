@@ -19,12 +19,12 @@ class SectionHeader {
     sectionHeaderSize = splitAtExcl(bytes, 8)[0];
     size = int.parse(sectionHeaderSize, radix: 16);
     String thisBytes =
-        splitAtExcl(bytes, size * 2)[0]; // chars rather than bytes
+        splitAtExcl(bytes, size * 2)[0]; // chars rather than shorts
     print(
         "initializing SectionHeader, end of section_header is ${bytes.substring(size * 2 - 8, size * 2)}");
     print(
         "initializing SectionHeader, start of subFileTable is ${bytes.substring(size * 2, size * 2 + 8)}");
-    otherBytes = splitAtExcl(bytes, size * 2)[1];
+    otherBytes = splitAtExcl(bytes, size * 2)[1]; // possible off by one error
     parseThis(thisBytes);
     // ascii + null pointer + fixed space for this and others
   }
