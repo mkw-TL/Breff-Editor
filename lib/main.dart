@@ -1,16 +1,19 @@
 // import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:convert/convert.dart';
+import 'dart:async';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:breff_editor/block_header.dart';
 // import 'package:path_provider/path_provider.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/utils.dart';
 import 'package:multi_split_view/multi_split_view.dart';
-import 'package:provider/provider.dart';
 import 'subfile_header.dart';
 import 'section_header.dart';
 import 'subfile_data.dart';
@@ -23,12 +26,10 @@ import 'package:toggle_switch/toggle_switch.dart';
 // import 'package:get/get.dart';
 
 List<Widget> subFileWidgets = <Widget>[];
+AppState state = AppState();
 
 void main() {
-  runApp(ChangeNotifierProvider(
-    create: (context) => AppState(),
-    child: const MyApp(),
-  ));
+  runApp(ProviderScope(child: MyApp()));
   DesktopWindow.setMinWindowSize(Size(600, 400));
 }
 
@@ -52,7 +53,7 @@ class MyApp extends StatelessWidget {
           children: <Widget>[
             topMenu(context),
             const Tab(),
-            const SubFilePage(),
+            SubFilePage(),
           ],
         ),
       )),
@@ -61,7 +62,14 @@ class MyApp extends StatelessWidget {
 }
 
 List<String> splitAtExcl(String str, int index) {
-  return [str.substring(0, index), str.substring(index, str.length)];
+  try {
+    return [str.substring(0, index), str.substring(index, str.length)];
+  } catch (e) {
+    print(str);
+    print(index);
+    print(e);
+    return [str.substring(0, index), str.substring(index, str.length)];
+  }
 }
 
 class AppState extends ChangeNotifier {
@@ -78,7 +86,7 @@ class AppState extends ChangeNotifier {
     extensions: <String>['breff'],
   );
 
-  void pickFile() async {
+  Future<void> pickFile() async {
     debugPrint(phyl.toString());
     if (phyl == null) {
       phyl = await openFile(acceptedTypeGroups: [typeGroup]);
@@ -96,8 +104,9 @@ class AppState extends ChangeNotifier {
         }
         debugPrint("phyl is ${phyl.toString()}");
         // debugPrint(buff.toString());
-        readFile(buff.toString());
-        notifyListeners();
+        bits = buff.toString();
+        await readFile(buff.toString());
+        debugPrint("end pickFile");
       }
     } else {
       print("There is an open file in the editor. Unimplemented functionality");
@@ -105,19 +114,26 @@ class AppState extends ChangeNotifier {
     }
   }
 
-  void readFile(String bits) {
-    bits = splitAtExcl(bits, 8 * 2)[1]; // remove first 8 bytes as padding
-    block = BlockHeader(bytes: bits);
-    bits = block.getOtherBytes(bits);
+  Future<void> readFile(String this_bits) async {
+    debugPrint("readFile started");
+    this_bits =
+        splitAtExcl(this_bits, 8 * 2)[1]; // remove first 8 bytes as padding
+    block = BlockHeader(bytes: this_bits);
+    this_bits = block.getOtherBytes(this_bits);
     debugPrint("block is getStr = ${block.getStr()}");
-    sectionHeader = SectionHeader(bytes: bits);
+    sectionHeader = SectionHeader(bytes: this_bits);
     debugPrint("section header is getStr = ${sectionHeader.getStr()}");
-    bits = sectionHeader.getOtherBytes(bits);
-    subFileTable = SubFileTable(data: bits);
+    this_bits = sectionHeader.getOtherBytes(this_bits);
+    subFileTable = SubFileTable(data: this_bits);
     debugPrint("in main, subFileTable is ${subFileTable.getStr()}");
+    debugPrint("readFile has concluded");
   }
 
-  Future<File?> saveFile() async {
+  Future<void> saveFile(newFileName) async {
+    print("our bits are: ${bits}");
+    await readFile(bits);
+    print("saving file");
+    print(block);
     StringBuffer out = StringBuffer();
     out.write("52454646FEFF0009");
     out.write(block.getStr());
@@ -127,10 +143,21 @@ class AppState extends ChangeNotifier {
     print(res.length);
     print(res);
     if (phyl == null) {
-      noop(); // TODO
+      Exception("phyl == null");
     }
-    File file = File(phyl!.path);
-    return file.writeAsString(res);
+    if (newFileName == "_") {
+      File file = File(phyl!.path);
+      debugPrint("ended SaveFile");
+
+      List<int> bytes = hex.decode(res);
+      file.writeAsBytes(bytes);
+    } else {
+      File file = File(phyl!.path);
+      var path = file.path;
+      var lastSeparator = path.lastIndexOf(Platform.pathSeparator);
+      var newPath = path.substring(0, lastSeparator + 1) + newFileName;
+      file.rename(newPath);
+    }
     // assert(res.length == int.parse(block.getThisBytes(), radix: 16));
   }
 
@@ -138,26 +165,48 @@ class AppState extends ChangeNotifier {
     subFileIdx = val;
   }
 
-  void saveAs(context) {
-    showDialog<String>(
+  Future<String?> dialogBuilder(context, controller) {
+    Completer<String?> completer = Completer<String?>();
+    showDialog(
         context: context,
-        builder: (BuildContext context) => Dialog(
-            child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      const Text('This is a typical dialog.'),
-                      const SizedBox(height: 15),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Close'),
-                      )
-                    ]))));
-    saveFile();
+        builder: (BuildContext context) {
+          return Dialog(
+              child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        const Text(
+                            'What name do you want to save the file as?'),
+                        const SizedBox(height: 15),
+                        Container(
+                            constraints: BoxConstraints(maxWidth: 200), //TODO
+                            child: TextFormField(
+                              controller: controller,
+                            )),
+                        const SizedBox(height: 15),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            completer.complete(controller
+                                .text); // Resolve the future with the entered text
+                          },
+                          child: const Text('Close'),
+                        )
+                      ])));
+        });
+    return completer.future;
+  }
+
+  void saveAs(context) async {
+    TextEditingController saveName = TextEditingController();
+    String? saveNameText =
+        await dialogBuilder(context, saveName); // Wait for the dialog result
+    if (saveNameText != null) {
+      debugPrint(saveNameText);
+      saveFile(saveNameText);
+    }
   }
 }
 
@@ -209,21 +258,24 @@ Widget topMenu(context) {
     child: Row(
       children: [
         SizedBox(
-          width: 200,
-          child: Row(
-            children: <Widget>[
-              TextButton(
-                  onPressed: () => AppState().saveAs(context),
-                  child: const Text("Save")),
-              TextButton(
-                  onPressed: () => AppState().saveFile(),
-                  child: const Text("Save as")),
-              TextButton(
-                  onPressed: () => AppState().pickFile(),
-                  child: const Text("Open")),
-            ],
-          ),
-        ),
+            width: 200,
+            child: Builder(
+              builder: (context) {
+                return Row(
+                  children: <Widget>[
+                    TextButton(
+                        onPressed: () => state.saveFile("_"),
+                        child: const Text("Save")),
+                    TextButton(
+                        onPressed: () => state.saveAs(context),
+                        child: const Text("Save as")),
+                    TextButton(
+                        onPressed: () => state.pickFile(),
+                        child: const Text("Open")),
+                  ],
+                );
+              },
+            )),
         Expanded(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -280,7 +332,7 @@ class Tab extends StatelessWidget {
             controller: TabbedViewController(tabs),
             contentBuilder: (BuildContext context, int tabIndex) {
               int i = tabIndex + 1;
-              AppState().setIdx(i);
+              state.setIdx(i);
               return Animate(
                   effects: [FadeEffect()],
                   child: Container(child: Text('Content $i'))); // TODO
@@ -290,90 +342,147 @@ class Tab extends StatelessWidget {
   }
 }
 
-class SubFilePage extends StatefulWidget {
-  const SubFilePage({super.key});
+var listOfSubfiles = StateProvider((ref) => []);
 
+class SubFilePage extends ConsumerWidget {
   @override
-  State<SubFilePage> createState() => _SubFilePage();
-}
-
-class _SubFilePage extends State<SubFilePage> {
-  Color col1 = Colors.black;
-  Color col2 = Colors.black;
-  Color col1_sec = Colors.black;
-  Color col2_sec = Colors.black;
-  Color dialogPickerColor1 = Colors.blue;
-  Color dialogPickerColor1_sec = Colors.orange;
-  Color dialogPickerColor2 = Colors.red;
-  Color dialogPickerColor2_sec = Colors.black;
-  bool texReverse = false;
-  bool texWrap = false;
-  bool alphaRef0 = false;
-  bool alphaRef1 = false;
-  bool partTransl = false;
-  bool childPartTransl = false;
-  bool childEmTransl = false;
-  @override
-  Widget build(context) {
-    return ChangeNotifierProvider(
-        create: (_) => AppState(),
-        child: Consumer<AppState>(
-            builder: (context, appState, _) => subFile(context)));
+  Widget build(context, ref) {
+    return subFile(context, ref);
   }
 
-  void updateDialogPickerColor2(Color color) {
-    setState(() {
-      dialogPickerColor2 = color;
-    });
+  final col1Provider = StateProvider<Color>((ref) {
+    return Colors.black;
+  });
+  final col2Provider = StateProvider<Color>((ref) {
+    return Colors.black;
+  });
+  final col1_secProvider = StateProvider<Color>((ref) {
+    return Colors.black;
+  });
+  final col2_secProvider = StateProvider<Color>((ref) {
+    return Colors.black;
+  });
+  final dialogPickerColor1Provider = StateProvider<Color>((ref) {
+    return Colors.blue;
+  });
+  final dialogPickerColor2Provider = StateProvider<Color>((ref) {
+    return Colors.red;
+  });
+  final dialogPickerColor1_secProvider = StateProvider<Color>((ref) {
+    return Colors.orange;
+  });
+  final dialogPickerColor2_secProvider = StateProvider<Color>((ref) {
+    return Colors.black;
+  });
+  final texReverseProvider = StateProvider<bool>((ref) {
+    return false;
+  });
+  final texWrapProvider = StateProvider<bool>((ref) {
+    return false;
+  });
+  final alphaRef0Provider = StateProvider<bool>((ref) {
+    return false;
+  });
+  final alphaRef1Provider = StateProvider<bool>((ref) {
+    return false;
+  });
+  final partTranslProvider = StateProvider<bool>((ref) {
+    return false;
+  });
+  final childPartTranslProvider = StateProvider<bool>((ref) {
+    return false;
+  });
+  final childEmTranslProvider = StateProvider<bool>((ref) {
+    return false;
+  });
+
+  void updateDialogPickerColor2(Color color, WidgetRef ref) {
+    ref.watch(dialogPickerColor2Provider.notifier).state = color;
   }
 
-  void updateDialogPickerColor1(Color color) {
-    setState(() {
-      dialogPickerColor1 = color;
-    });
+  void updateDialogPickerColor1(Color color, WidgetRef ref) {
+    ref.watch(dialogPickerColor1Provider.notifier).state = color;
   }
 
-  void updateDialogPickerColor2_sec(Color color) {
-    setState(() {
-      dialogPickerColor2_sec = color;
-    });
+  void updateDialogPickerColor1_sec(Color color, WidgetRef ref) {
+    ref.watch(dialogPickerColor1_secProvider.notifier).state = color;
   }
 
-  void updateDialogPickerColor1_sec(Color color) {
-    setState(() {
-      dialogPickerColor1_sec = color;
-    });
+  void updateDialogPickerColor2_sec(Color color, WidgetRef ref) {
+    ref.watch(dialogPickerColor2_secProvider.notifier).state = color;
   }
 
-  Future<bool> colorPickerDialog(
-      Color whichColor, Function(Color) onColorChanged) async {
-    return ColorPicker(
-        // Use the dialogPickerColor as start color.
-        color: whichColor,
-        // Update the dialogPickerColor using the callback.
-        onColorChanged: (Color color) async {
-          print("color changed from $whichColor to $color");
-          onColorChanged(color);
-        },
-        enableOpacity: true,
-        enableShadesSelection: false,
-        actionButtons: ColorPickerActionButtons(dialogCancelButtonLabel: "OK"),
-        pickersEnabled: {
-          ColorPickerType.wheel: true,
-          ColorPickerType.primary: false,
-          ColorPickerType.accent: false,
-        }).showPickerDialog(context);
+  void updateCol1(Color color, WidgetRef ref) {
+    ref.watch(col1Provider.notifier).state = color;
   }
 
-  void updateCol2(Color newCol) async {
-    final Color colorBeforeDialog = dialogPickerColor2;
-    if (!(await colorPickerDialog(
-        dialogPickerColor2, updateDialogPickerColor2))) {
-      setState(() {
-        dialogPickerColor2 = colorBeforeDialog;
-      });
-    }
+  void updateCol2(Color color, WidgetRef ref) {
+    ref.watch(col2Provider.notifier).state = color;
   }
+
+  void updateCol1_sec(Color color, WidgetRef ref) {
+    ref.watch(col1_secProvider.notifier).state = color;
+  }
+
+  void updateCol2_sec(Color color, WidgetRef ref) {
+    ref.watch(col2_secProvider.notifier).state = color;
+  }
+
+  void updatetexReverse(bool bool, WidgetRef ref) {
+    ref.watch(texReverseProvider.notifier).state = bool;
+  }
+
+  void updateTexWrap(bool bool, WidgetRef ref) {
+    ref.watch(texWrapProvider.notifier).state = bool;
+  }
+
+  void updateAlphaRef0(bool bool, WidgetRef ref) {
+    ref.watch(alphaRef0Provider.notifier).state = bool;
+  }
+
+  void updateAlphaRef1(bool bool, WidgetRef ref) {
+    ref.watch(alphaRef1Provider.notifier).state = bool;
+  }
+
+  void updatePartTransl(bool bool, WidgetRef ref) {
+    ref.watch(partTranslProvider.notifier).state = bool;
+  }
+
+  void updateChildPartTransl(bool bool, WidgetRef ref) {
+    ref.watch(childPartTranslProvider.notifier).state = bool;
+  }
+
+  void updateChildEmTransl(bool bool, WidgetRef ref) {
+    ref.watch(childEmTranslProvider.notifier).state = bool;
+  }
+
+  // Future<bool> colorPickerDialog(WidgetRef ref, Color whichColor,
+  //     Function(Color, WidgetRef ref) onColorChangedFtn, BuildContext context) async {
+  //   return ColorPicker(
+  //       // Use the dialogPickerColor as start color.
+  //       color: whichColor,
+  //       // Update the dialogPickerColor using the callback.
+  //       onColorChanged: (Color color) async {
+  //         print("color changed from $whichColor to $color");
+  //         onColorChangedFtn(color, ref);
+  //       },
+  //       enableOpacity: true,
+  //       enableShadesSelection: false,
+  //       actionButtons: ColorPickerActionButtons(dialogCancelButtonLabel: "OK"),
+  //       pickersEnabled: {
+  //         ColorPickerType.wheel: true,
+  //         ColorPickerType.primary: false,
+  //         ColorPickerType.accent: false,
+  //       }).showPickerDialog(context);
+  // }
+
+  // void dialogueUpdateCol2(Color newCol, WidgetRef ref, context) async {
+  //   final Color colorBeforeDialog = ref.watch(col2Provider);
+  //   if (!(await colorPickerDialog(ref,
+  //       colorBeforeDialog, updateCol2(Colors.black, ref), context))) {
+  //         ref.watch(col2Provider.notifier).state =
+  //   }
+  // }
 
   Widget textTabs(context) {
     int numActiveTexs = 3; // TODO
@@ -410,7 +519,7 @@ class _SubFilePage extends State<SubFilePage> {
         data: themeData,
         child: TabbedView(
             controller: TabbedViewController(tabs),
-            contentBuilder: (BuildContext context, int tabIndex) {
+            contentBuilder: (BuildContext tabContent, int tabIndex) {
               int i = tabIndex + 1;
               return Animate(
                 effects: [FadeEffect()],
@@ -508,7 +617,7 @@ class _SubFilePage extends State<SubFilePage> {
     ));
   }
 
-  Widget firstColumn(BuildContext context) {
+  Widget firstColumn(BuildContext context, WidgetRef ref) {
     // String col1Prim;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -541,55 +650,50 @@ class _SubFilePage extends State<SubFilePage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Color 1 Primary",
-                      style: Theme.of(context).textTheme.bodySmall!),
-                  ColorIndicator(
+              Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Text("Color 1 Primary",
+                    style: Theme.of(context).textTheme.bodySmall!),
+                ColorIndicator(
                     width: 44,
                     height: 44,
                     borderRadius: 4,
-                    color: dialogPickerColor1,
+                    color: ref.watch(dialogPickerColor1Provider),
                     onSelectFocus: false,
                     onSelect: () async {
                       // Store current color before we open the dialog.
-                      final Color colorBeforeDialog = dialogPickerColor1;
+                      final Color colorBeforeDialog =
+                          ref.watch(dialogPickerColor1Provider);
                       // Wait for the picker to close, if dialog was dismissed,
                       // then restore the color we had before it was opened.
-                      if (!(await colorPickerDialog(
-                          dialogPickerColor1, updateDialogPickerColor1))) {
-                        setState(() {
-                          dialogPickerColor1 = colorBeforeDialog;
-                        });
-                      }
-                    },
-                  ),
-                  Container(
-                    height: 10,
-                  ),
-                  Text("Color 2 Primary",
-                      style: Theme.of(context).textTheme.bodySmall!),
-                  ColorIndicator(
-                      width: 44,
-                      height: 44,
-                      borderRadius: 4,
-                      color: dialogPickerColor2,
-                      onSelectFocus: false,
-                      onSelect: () async {
-                        // Store current color before we open the dialog.
-                        final Color colorBeforeDialog = dialogPickerColor2;
-                        // Wait for the picker to close, if dialog was dismissed,
-                        // then restore the color we had before it was opened.
-                        if (!(await colorPickerDialog(
-                            dialogPickerColor2, updateDialogPickerColor2))) {
-                          setState(() {
-                            dialogPickerColor2 = colorBeforeDialog;
-                          });
-                        }
-                      }),
-                ],
-              ),
+                      // if (!(await colorPickerDialog(
+                      //     ref.watch(dialogPickerColor1Provider), updateDialogPickerColor1))) {
+                      //     ref.watch(dialogPickerColor1Provider.notifier).state = colorBeforeDialog;
+                      //   };
+                    }),
+                Container(
+                  height: 10,
+                ),
+                Text("Color 2 Primary",
+                    style: Theme.of(context).textTheme.bodySmall!),
+                ColorIndicator(
+                    width: 44,
+                    height: 44,
+                    borderRadius: 4,
+                    color: ref.watch(dialogPickerColor2Provider),
+                    onSelectFocus: false,
+                    onSelect: () async {
+                      // Store current color before we open the dialog.
+                      final Color colorBeforeDialog =
+                          ref.watch(dialogPickerColor2Provider);
+                      // Wait for the picker to close, if dialog was dismissed,
+                      // then restore the color we had before it was opened.
+                      // if (!(await colorPickerDialog(
+                      //     dialogPickerColor2, updateDialogPickerColor2))) {
+                      //   setState(() {
+                      //     dialogPickerColor2 = colorBeforeDialog;
+                      //   });
+                    }),
+              ]),
               Container(
                 width: 30,
               ),
@@ -599,48 +703,48 @@ class _SubFilePage extends State<SubFilePage> {
                   Text("Color 1 Secondary",
                       style: Theme.of(context).textTheme.bodySmall!),
                   ColorIndicator(
-                    width: 44,
-                    height: 44,
-                    borderRadius: 4,
-                    color: dialogPickerColor1_sec,
-                    onSelectFocus: false,
-                    onSelect: () async {
-                      // Store current color before we open the dialog.
-                      final Color colorBeforeDialog = dialogPickerColor1_sec;
-                      // Wait for the picker to close, if dialog was dismissed,
-                      // then restore the color we had before it was opened.
-                      if (!(await colorPickerDialog(dialogPickerColor1_sec,
-                          updateDialogPickerColor1_sec))) {
-                        setState(() {
-                          dialogPickerColor1_sec = colorBeforeDialog;
-                        });
-                      }
-                    },
-                  ),
+                      width: 44,
+                      height: 44,
+                      borderRadius: 4,
+                      color: ref.watch(dialogPickerColor1_secProvider),
+                      onSelectFocus: false,
+                      onSelect: () async {
+                        // Store current color before we open the dialog.
+                        final Color colorBeforeDialog =
+                            ref.watch(dialogPickerColor1_secProvider);
+                        // Wait for the picker to close, if dialog was dismissed,
+                        // then restore the color we had before it was opened.
+                        // if (!(await colorPickerDialog(dialogPickerColor1_sec,
+                        //     updateDialogPickerColor1_sec))) {
+                        //   setState(() {
+                        //     dialogPickerColor1_sec = colorBeforeDialog;
+                        //   });
+                      }),
                   Container(
                     height: 10,
                   ),
                   Text("Color 2 Secondary",
                       style: Theme.of(context).textTheme.bodySmall!),
                   ColorIndicator(
-                    width: 44,
-                    height: 44,
-                    borderRadius: 4,
-                    color: dialogPickerColor2_sec,
-                    onSelectFocus: false,
-                    onSelect: () async {
-                      // Store current color before we open the dialog.
-                      final Color colorBeforeDialog = dialogPickerColor2_sec;
-                      // Wait for the picker to close, if dialog was dismissed,
-                      // then restore the color we had before it was opened.
-                      if (!(await colorPickerDialog(dialogPickerColor2_sec,
-                          updateDialogPickerColor2_sec))) {
-                        setState(() {
-                          dialogPickerColor2_sec = colorBeforeDialog;
-                        });
-                      }
-                    },
-                  ),
+                      width: 44,
+                      height: 44,
+                      borderRadius: 4,
+                      color: ref.watch(dialogPickerColor2_secProvider),
+                      onSelectFocus: false,
+                      onSelect: () async {
+                        // Store current color before we open the dialog.
+                        final Color colorBeforeDialog =
+                            ref.watch(dialogPickerColor2_secProvider);
+                        // Wait for the picker to close, if dialog was dismissed,
+                        // then restore the color we had before it was opened.
+                        //   if (!(await colorPickerDialog(dialogPickerColor2_sec,
+                        //       updateDialogPickerColor2_sec))) {
+                        //     setState(() {
+                        //       dialogPickerColor2_sec = colorBeforeDialog;
+                        //     });
+                        //   }
+                        // },
+                      }),
                 ],
               ),
             ],
@@ -651,20 +755,16 @@ class _SubFilePage extends State<SubFilePage> {
           children: [
             Text("texWrap?"),
             Checkbox(
-              value: texWrap,
+              value: ref.watch(texWrapProvider),
               onChanged: (bool? newValue) {
-                setState(() {
-                  texWrap = newValue!;
-                });
+                ref.watch(texWrapProvider.notifier).state = newValue!;
               },
             ),
             Text("texReverse?"),
             Checkbox(
-                value: texReverse,
+                value: ref.watch(texReverseProvider),
                 onChanged: (bool? newValue) {
-                  setState(() {
-                    texReverse = newValue!;
-                  });
+                  ref.watch(texReverseProvider.notifier).state = newValue!;
                 }),
           ],
         ),
@@ -673,7 +773,7 @@ class _SubFilePage extends State<SubFilePage> {
     );
   }
 
-  Widget alphaRefs(context) {
+  Widget alphaRefs(context, WidgetRef ref) {
     return Container(
         constraints: BoxConstraints.tightFor(height: 70),
         child: Column(
@@ -685,13 +785,9 @@ class _SubFilePage extends State<SubFilePage> {
                 Text("AlphaComparison 0"),
                 Container(width: 10),
                 Checkbox(
-                    value: alphaRef0,
+                    value: ref.watch(alphaRef0Provider),
                     onChanged: (bool? newValue) {
-                      setState(
-                        () {
-                          alphaRef0 = newValue!;
-                        },
-                      );
+                      ref.watch(alphaRef0Provider.notifier).state = newValue!;
                     }),
               ],
             ),
@@ -701,13 +797,9 @@ class _SubFilePage extends State<SubFilePage> {
                 Text("AlphaComparison 1"),
                 Container(width: 10),
                 Checkbox(
-                    value: alphaRef1,
+                    value: ref.watch(alphaRef1Provider),
                     onChanged: (bool? newValue) {
-                      setState(
-                        () {
-                          alphaRef1 = newValue!;
-                        },
-                      );
+                      ref.watch(alphaRef1Provider.notifier).state = newValue!;
                     }),
               ],
             ),
@@ -760,7 +852,7 @@ class _SubFilePage extends State<SubFilePage> {
     );
   }
 
-  Widget secondColumn(BuildContext context) {
+  Widget secondColumn(BuildContext context, WidgetRef ref) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -823,28 +915,28 @@ class _SubFilePage extends State<SubFilePage> {
                             children: [
                               Text("Child Particle"),
                               Checkbox(
-                                  value: childPartTransl,
+                                  value: ref.watch(childPartTranslProvider),
                                   onChanged: (bool? newValue) {
-                                    setState(() {
-                                      childPartTransl = newValue!;
-                                    });
+                                    ref
+                                        .watch(childPartTranslProvider.notifier)
+                                        .state = newValue!;
                                   }),
                               Text("Particle"),
                               Checkbox(
-                                  value: partTransl,
+                                  value: ref.watch(partTranslProvider),
                                   onChanged: (bool? newValue) {
-                                    setState(() {
-                                      partTransl = newValue!;
-                                    });
+                                    ref
+                                        .watch(partTranslProvider.notifier)
+                                        .state = newValue!;
                                   }),
                               Text("Child Emitter"),
                               Checkbox(
-                                  value: childEmTransl,
+                                  value: ref.watch(childEmTranslProvider),
                                   onChanged: (bool? newValue) {
-                                    setState(() {
-                                      childEmTransl = newValue!;
-                                    });
-                                  })
+                                    ref
+                                        .watch(childEmTranslProvider.notifier)
+                                        .state = newValue!;
+                                  }),
                             ]),
                       ],
                     ),
@@ -933,7 +1025,7 @@ class _SubFilePage extends State<SubFilePage> {
             ),
           ),
         ),
-        alphaRefs(context),
+        alphaRefs(context, ref),
         randOffs(context),
       ],
     );
@@ -1195,9 +1287,10 @@ class _SubFilePage extends State<SubFilePage> {
     );
   }
 
-  Widget subFile(context) {
-    return Expanded(
-        child: MultiSplitViewTheme(
+  Widget subFile(context, ref) {
+    return ProviderScope(
+        child: Expanded(
+            child: MultiSplitViewTheme(
       data: MultiSplitViewThemeData(
           dividerPainter:
               DividerPainters.grooved1(highlightedColor: Colors.indigo[900]!)),
@@ -1208,17 +1301,17 @@ class _SubFilePage extends State<SubFilePage> {
       ], children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: firstColumn(context),
+          child: firstColumn(context, ref),
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: secondColumn(context),
+          child: secondColumn(context, ref),
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: thirdColumnTabs(context),
         ),
       ]),
-    ));
+    )));
   }
 }

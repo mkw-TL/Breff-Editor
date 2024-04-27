@@ -27,10 +27,28 @@ class SubFileTable extends ChangeNotifier {
     for (SubFileHeader header in headers) {
       out.write(header.getStr());
     }
+    // padding here
+    int i = 0;
     for (SubFileData dat in subFileDataList) {
+      if (out.toString().length !=
+          int.parse(headers[i].getSubFileOffset(), radix: 16) * 2) {
+        debugPrint("SUBFILE_OFFSET different than LENGTH OF STRING");
+        debugPrint(out.toString().length.toString());
+        debugPrint((int.parse(headers[i].getSubFileOffset(), radix: 16) * 2)
+            .toString());
+        int j = ((int.parse(headers[i].getSubFileOffset(), radix: 16)) * 2 -
+            out.toString().length * 2);
+        debugPrint(j.toString());
+      }
       out.write(dat.getStr());
+      i++;
     }
-    return out.toString();
+    debugPrint("subFileTable without extra zeros is:");
+    debugPrint(out.toString());
+    debugPrint("subFileTable with extra zeros is:");
+    debugPrint(
+        out.toString().padRight(int.parse(sizeTable, radix: 16) * 2, "0"));
+    return out.toString().padRight(int.parse(sizeTable, radix: 16) * 2, "0");
   }
 
   void parseThis(data) {

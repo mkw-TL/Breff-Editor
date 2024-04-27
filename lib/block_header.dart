@@ -16,16 +16,20 @@ class BlockHeader {
   }
 
   String getStr() {
+    debugPrint("we are printing block_header");
     StringBuffer out = StringBuffer();
     out.write(totalBytes);
     out.write(sizeHeader);
-    out.write("0001524546460000");
+    out.write("0001"); // number of blocks
+    out.write("52454646");
     out.write(lenSectionBytesExcHeader);
+    debugPrint("our block header is ${out.toString()}");
     String str = out.toString();
     return str;
   }
 
   void parseThis(bytes) {
+    //LOOK AT THISSSS
     debugPrint("parsing block");
     String thisBytes = splitAtExcl(bytes, 16 * 2)[0]; // fixed block length
     debugPrint("thisBytes is ${thisBytes}");
@@ -51,13 +55,13 @@ class BlockHeader {
   }
 
   void setSizeHeader(String val) {
-    sizeHeader = int.parse(val, radix: 16).toRadixString(16).padLeft(2, "0");
+    sizeHeader = int.parse(val, radix: 16).toRadixString(16).padLeft(4, "0");
     //notifyListeners();
   }
 
   void setLenSectionBytesExclHeader(String val) {
     lenSectionBytesExcHeader =
-        int.parse(val, radix: 16).toRadixString(16).padLeft(4, "0");
+        int.parse(val, radix: 16).toRadixString(16).padLeft(8, "0");
     //notifyListeners();
   }
 }
